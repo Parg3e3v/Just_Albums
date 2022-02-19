@@ -37,9 +37,10 @@ public class AlbumListFragment extends Fragment {
     public LinearLayout lay;
     public NestedScrollView contCont;
     public TextView first;
-    ArrayList<AlbumTupple> Albums;
+//    ArrayList<AlbumTupple> Albums;
     public DBHelper db;
     ArrayList<String> ids;
+    ArrayList<Integer> ALbIds;
     public static ArrayList<String> titles, artists, Reacts;
     public static ArrayList<Bitmap> images;
     public static ArrayList<Float> r1, r2, r3, duration;
@@ -47,27 +48,27 @@ public class AlbumListFragment extends Fragment {
 
     public Spinner deb;
 
-    public class AlbumTupple<linearLayout, pos_as_default, title, artist, rating, duration, year> {
-        public final LinearLayout linearLayout;
-        public final int pos_as_default;
-        public final String title;
-        public final String artist;
-        public final float rating;
-        public final float duration;
-        public final int year;
-
-
-        public AlbumTupple(LinearLayout linearLayout, int pos_as_default, String title,
-                           String artist, float rating, float duration, int year) {
-            this.linearLayout = linearLayout;
-            this.pos_as_default = pos_as_default;
-            this.title = title;
-            this.artist = artist;
-            this.rating = rating;
-            this.duration = duration;
-            this.year = year;
-        }
-    }
+//    public class AlbumTupple<linearLayout, pos_as_default, title, artist, rating, duration, year> {
+//        public final LinearLayout linearLayout;
+//        public final int pos_as_default;
+//        public final String title;
+//        public final String artist;
+//        public final float rating;
+//        public final float duration;
+//        public final int year;
+//
+//
+//        public AlbumTupple(LinearLayout linearLayout, int pos_as_default, String title,
+//                           String artist, float rating, float duration, int year) {
+//            this.linearLayout = linearLayout;
+//            this.pos_as_default = pos_as_default;
+//            this.title = title;
+//            this.artist = artist;
+//            this.rating = rating;
+//            this.duration = duration;
+//            this.year = year;
+//        }
+//    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -78,7 +79,6 @@ public class AlbumListFragment extends Fragment {
         first = (TextView) view.findViewById(R.id.first);
         contCont = (NestedScrollView) view.findViewById(R.id.contCont);
         deb = (Spinner) view.findViewById(R.id.spinner);
-        initspinnerfooter();
         db = new DBHelper(view.getContext());
         ids = new ArrayList<String>();
         titles = new ArrayList<String>();
@@ -92,10 +92,11 @@ public class AlbumListFragment extends Fragment {
         duration = new ArrayList<Float>();
         year = new ArrayList<Integer>();
 
-        Albums = new ArrayList<AlbumTupple>();
-
+//        Albums = new ArrayList<AlbumTupple>();
+        ALbIds = new ArrayList<Integer>();
 
         UpdateViewContent();
+        initspinnerfooter();
 
         return view;
     }
@@ -138,16 +139,20 @@ public class AlbumListFragment extends Fragment {
         }
 
 
-        if (Albums.size() == 0) {
+//        if (Albums.size() == 0) {
             for (int i = 0; i < titles.size(); i++) {
                 Album alb = new Album(titles.get(i), artists.get(i), Reacts.get(i), IsEP.get(i),
                         images.get(i), new float[]{r1.get(i), r2.get(i), r3.get(i)}, i + 1,
                         duration.get(i), year.get(i));
 
-                alb.LoadAlbum(alb.id, alb.name, alb.artist, alb.react, alb.IsEP, alb.img,
-                        alb.ratings, lay, view.getContext(), 9999 + i);
+                int tempid = 9999 + i;
 
-                LinearLayout example = view.findViewById(9999 + i);
+                alb.LoadAlbum(alb.id, alb.name, alb.artist, alb.react, alb.IsEP, alb.img,
+                        alb.ratings, lay, view.getContext(), tempid);
+
+                LinearLayout example = view.findViewById(tempid);
+
+                ALbIds.add(tempid);
 
                 example.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -167,17 +172,19 @@ public class AlbumListFragment extends Fragment {
                 });
 
                 // pos_as_default, title, artist, rating, duration, year
-                float rt = (alb.ratings[0] + alb.ratings[1] + alb.ratings[2]) / 3;
-                AlbumTupple temp = new AlbumTupple(example, i, alb.name, alb.artist, rt,
-                        alb.duration, alb.year);
-                Albums.add(temp);
+//                float rt = (alb.ratings[0] + alb.ratings[1] + alb.ratings[2]) / 3;
+//                AlbumTupple temp = new AlbumTupple(example, i, alb.name, alb.artist, rt,
+//                        alb.duration, alb.year);
+//                Albums.add(temp);
             }
+            System.out.println(ALbIds + "IDS");
 
-        }else{
-            for(int i = 0; i < Albums.size(); i++){
-                lay.addView(Albums.get(i).linearLayout);
-            }
-        }
+
+//        }else{
+//            for(int i = 0; i < Albums.size(); i++){
+//                lay.addView(Albums.get(i).linearLayout);
+//            }
+//        }
     }
     private void initspinnerfooter() {
         ArrayList<String> Sort = ids;
@@ -189,13 +196,29 @@ public class AlbumListFragment extends Fragment {
                     case "time added":
                         System.out.println("TIME ADDED");
 
-                        System.out.println(Albums.size() + "SIZE");
-                        ArrayList<LinearLayout> tempArr = new ArrayList<LinearLayout>();
-                        for (int i = 0; i < Albums.size(); i++){
-                            //Albums.get(i).pos_as_default
-                        }
-                        UpdateViewContent();
-                }
+//
+//                        System.out.println(Albums.size() + "SIZE");
+//                        ArrayList<LinearLayout> tempArr = new ArrayList<LinearLayout>();
+//                        for (int i = 0; i < Albums.size(); i++){
+//                            //Albums.get(i).pos_as_default
+//                        }
+//                        UpdateViewContent();
+                        break;
+                    case "title":
+//                        try {
+                        LinearLayout layyy;
+                        layyy = (LinearLayout) view.findViewById(ALbIds.get(0));
+                        System.out.println(ALbIds.get(1) + "XUUUUUY");
+                        layyy.setVisibility(View.GONE);
+                            Toast.makeText(view.getContext(), "TITLE", Toast.LENGTH_LONG).show();
+//                        }catch (NullPointerException e){
+//                            Toast.makeText(view.getContext(), "Che ynger", Toast.LENGTH_LONG).show();
+//                        }
+                        break;
+
+                    default:
+
+                    }
 //                UpdateViewContent(Sort);
             }
 
