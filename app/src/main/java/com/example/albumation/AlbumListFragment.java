@@ -40,7 +40,7 @@ public class AlbumListFragment extends Fragment {
     public TextView first;
     ArrayList<AlbumTupple> Albums;
     public DBHelper db;
-    ArrayList<String> ids;
+    public static ArrayList<String> ids;
 //    ArrayList<LinearLayout> ALbIds;
     public static ArrayList<String> titles, artists, Reacts;
     public static ArrayList<Bitmap> images;
@@ -50,13 +50,13 @@ public class AlbumListFragment extends Fragment {
     public Spinner deb;
 
     public class AlbumTupple<linearLayout, pos_as_default, title, artist, rating, duration, year> {
-        public final LinearLayout linearLayout;
-        public final int pos_as_default;
-        public final String title;
-        public final String artist;
-        public final float rating;
-        public final float duration;
-        public final int year;
+        public  LinearLayout linearLayout;
+        public int pos_as_default;
+        public String title;
+        public String artist;
+        public float rating;
+        public float duration;
+        public int year;
 
 
         public AlbumTupple(LinearLayout linearLayout, int pos_as_default, String title,
@@ -69,6 +69,19 @@ public class AlbumListFragment extends Fragment {
             this.duration = duration;
             this.year = year;
         }
+
+        public void Update(AlbumTupple tp){
+            this.title = tp.title;
+            this.pos_as_default = tp.pos_as_default;
+            this.title = tp.title;
+            this.artist = tp.artist;
+            this.rating = tp.rating;
+            this.duration = tp.duration;
+            this.year = tp.year;
+            this.linearLayout = tp.linearLayout;
+        }
+
+
     }
 
     @Override
@@ -111,7 +124,7 @@ public class AlbumListFragment extends Fragment {
         Cursor cursor = db.readAllData();
         if (cursor.getCount() == 0) {
             Toast.makeText(view.getContext(),
-                    "You have not added any album yet, add your firs one!", Toast.LENGTH_LONG);
+                    "You have not added any album yet, add your firs one!", Toast.LENGTH_LONG).show();
         } else {
             while (cursor.moveToNext()) {
                 ids.add(cursor.getString(0));
@@ -140,9 +153,9 @@ public class AlbumListFragment extends Fragment {
 
 
 //        if (Albums.size() == 0) {
-            for (int i = 0; i < titles.size(); i++) {
+            for (int i = 0; i < ids.size(); i++) {
                 Album alb = new Album(titles.get(i), artists.get(i), Reacts.get(i), IsEP.get(i),
-                        images.get(i), new float[]{r1.get(i), r2.get(i), r3.get(i)}, i + 1,
+                        images.get(i), new float[]{r1.get(i), r2.get(i), r3.get(i)}, i+1,
                         duration.get(i), year.get(i));
 
                 int tempid = 9999 + i;
@@ -166,14 +179,8 @@ public class AlbumListFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(view.getContext(), EditActivity.class);
-                        intent.putExtra("Name", alb.name);
-                        intent.putExtra("Artist", alb.artist);
-                        intent.putExtra("Id", alb.id);
-                        intent.putExtra("Rating1", String.valueOf(alb.ratings[0]));
-                        intent.putExtra("Rating2", String.valueOf(alb.ratings[1]));
-                        intent.putExtra("Rating3", String.valueOf(alb.ratings[2]));
-
-                        intent.putExtra("Id", String.valueOf(alb.id));
+                        intent.putExtra("id", String.valueOf(alb.id));
+//                        intent.putExtra("Rating1", alb.ratings);
                         getActivity().finish();
                         startActivity(intent);
                     }
@@ -196,17 +203,51 @@ public class AlbumListFragment extends Fragment {
                         }
                         break;
                     case "title":
-//                        System.out.println(Albums.get(1) + "XUUUUUY");
-//                        Albums.get(1).linearLayout.setVisibility(View.GONE);
                         Toast.makeText(view.getContext(), "TITLE", Toast.LENGTH_LONG).show();
                         lay.removeAllViews();
 
-                        String[] titles = new String[Albums.size()];
-                        for(int i = 0; i < Albums.size(); i++){
-                            titles[i] = Albums.get(i).title;
+                        /*
+
+                        String tempp;
+                        String[] alb = {"A", "C", "V", "B", "T"};
+                        for(int i=0;i<alb.length;i++){
+                            for(int j=i+1;j<alb.length;j++){
+                                if(alb[i].compareToIgnoreCase(alb[j])>0){
+                                    tempp = alb[i];
+                                    alb[i] = alb[j];
+                                    alb[j] = tempp;
+                                }
+                            }
+
                         }
-                        Arrays.sort(titles);
-                        System.out.println("titles - >" + titles[0]);
+                        for(int i = 0; i < alb.length; i++)
+                            System.out.println(alb[i]);
+                            */
+
+                        AlbumTupple tempp;
+                        for(int i=0;i<Albums.size();i++){
+                            for(int j=i+1;j<Albums.size();j++){
+                                if(Albums.get(i).title.compareToIgnoreCase(Albums.get(j).title)>0){
+                                    tempp = Albums.get(i);
+                                    Albums.get(i).Update(Albums.get(j));
+                                    Albums.get(j).Update(tempp);
+                                }
+                            }
+
+                        }
+                        for (int a = 0 ; a < Albums.size(); a++) {
+//                            if(Albums.get(i).linearLayout.getParent() != null) {
+//                                ((ViewGroup)Albums.get(i).linearLayout.getParent())
+//                                        .removeView(Albums.get(i).linearLayout); // <- fix
+//                            }
+//                            lay.addView(Albums.get(i).linearLayout);
+                            System.out.println(Albums.get(a).title + " AHA");
+                            System.out.println(Albums.get(a).artist);
+                        }
+
+                        System.out.println(Albums.get(0).title + " AHA");
+                        System.out.println(Albums.get(0).artist);
+                        System.out.println(Albums.size());
                         break;
 
                     default:

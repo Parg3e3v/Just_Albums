@@ -79,21 +79,17 @@ public class AddActivity extends AppCompatActivity {
                                 (Float.valueOf(timeTexts[2]) / 3600);
                         System.out.println(time);
 
-                        IsEP = 0;
-                        if (IsEpBut.isChecked())
-                            IsEP = 1;
+//                        IsEP = 0;
+//                        if (IsEpBut.isChecked())
+//                            IsEP = 1;
+
+                        IsEP = IsEpBut.isChecked() ? 1 : 0;
                         System.out.println(Liked.getRating() + "--" + Recogn.getRating() + "--" + Your.getRating());
                         db.AddAlbum(titleInput.getText().toString(), artistInput.getText().toString(),
                                 React.getText().toString(), IsEP,
                                 Integer.valueOf(Year.getText().toString()),
                                 time,
                                 Liked.getRating(), Recogn.getRating(), Your.getRating(), img);
-
-                        //                    String title = titleInput.getText().toString();
-                        //                    String artist = artistInput.getText().toString();
-                        //                    float liked = Liked.getRating();
-                        //                    float recogn = Recogn.getRating();
-                        //                    float your = Your.getRating();
 
                         Intent intent = new Intent(AddActivity.this, MainActivity.class);
                         AddActivity.this.finish();

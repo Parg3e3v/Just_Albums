@@ -58,11 +58,13 @@ public class EditActivity extends AppCompatActivity {
         cancel = (Button) findViewById(R.id.button_cancel);
 
 
-        String idd = getIntent().getStringExtra("Id");
-
+        String idd = getIntent().getStringExtra("id");
         id = Integer.parseInt(idd);
+        id -= 1;
+//        id = id - 1;
+//        id = Integer.parseInt(idd);
 
-        float timeText = AlbumListFragment.duration.get(id-1);
+        float timeText = AlbumListFragment.duration.get(id);
 //                getIntent().getStringExtra("Duration");
 
         double time = Double.valueOf(timeText);
@@ -80,19 +82,19 @@ public class EditActivity extends AppCompatActivity {
             btw2 = "0";
 
 
-        title.setText(getIntent().getStringExtra("Name"));
-        artist.setText(getIntent().getStringExtra("Artist"));
+        title.setText(AlbumListFragment.titles.get(id));
+        artist.setText(AlbumListFragment.artists.get(id));
         duration.setText(h + ":"+ btw + m + ":" + btw2 + s);
-        year.setText(String.valueOf(AlbumListFragment.year.get(id-1)));
-        react.setText(AlbumListFragment.Reacts.get(id-1));
-        liked.setRating(Float.parseFloat(getIntent().getStringExtra("Rating1")));
-        tr_recn.setRating(Float.parseFloat(getIntent().getStringExtra("Rating2")));
-        your.setRating(Float.parseFloat(getIntent().getStringExtra("Rating3")));
-        boolean ep = (AlbumListFragment.IsEP.get(id-1) == 1);
+        year.setText(String.valueOf(AlbumListFragment.year.get(id)));
+        react.setText(AlbumListFragment.Reacts.get(id));
+        liked.setRating(AlbumListFragment.r1.get(id));
+        tr_recn.setRating(AlbumListFragment.r2.get(id));
+        your.setRating(AlbumListFragment.r3.get(id));
+        boolean ep = (AlbumListFragment.IsEP.get(id) == 1);
         EP.setChecked(ep);
 
 
-        Bitmap bitmap = AlbumListFragment.images.get(id-1);
+        Bitmap bitmap = AlbumListFragment.images.get(id);
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         int wh =  AlbumListFragment.dp(getApplicationContext(),320);
         Bitmap bitmapScaled = Bitmap.createScaledBitmap(bitmap, wh, wh, true);
@@ -123,7 +125,7 @@ public class EditActivity extends AppCompatActivity {
 //                imgByte = baos.toByteArray();
                 int isep = EP.isChecked() ? 1 : 0;
 
-                db.UpdateData(String.valueOf(id), title.getText().toString(),
+                db.UpdateData(String.valueOf(id+1), title.getText().toString(),
                         artist.getText().toString(), react.getText().toString(),
                         isep, Integer.parseInt(
                         year.getText().toString()), timeText,
