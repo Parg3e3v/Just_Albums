@@ -29,8 +29,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class AlbumListFragment extends Fragment {
     View view;
@@ -51,16 +54,14 @@ public class AlbumListFragment extends Fragment {
 
     public class AlbumTupple<linearLayout, pos_as_default, title, artist, rating, duration, year> {
         public  LinearLayout linearLayout;
-        public int pos_as_default;
-        public String title;
-        public String artist;
-        public float rating;
-        public float duration;
-        public int year;
+        public int pos_as_default, year;
+        public String title, artist;
+        public float rating, duration;
+        public TextView id;
 
 
         public AlbumTupple(LinearLayout linearLayout, int pos_as_default, String title,
-                           String artist, float rating, float duration, int year) {
+                           String artist, float rating, float duration, int year, TextView id) {
             this.linearLayout = linearLayout;
             this.pos_as_default = pos_as_default;
             this.title = title;
@@ -68,20 +69,8 @@ public class AlbumListFragment extends Fragment {
             this.rating = rating;
             this.duration = duration;
             this.year = year;
+            this.id = id;
         }
-
-        public void Update(AlbumTupple tp){
-            this.title = tp.title;
-            this.pos_as_default = tp.pos_as_default;
-            this.title = tp.title;
-            this.artist = tp.artist;
-            this.rating = tp.rating;
-            this.duration = tp.duration;
-            this.year = tp.year;
-            this.linearLayout = tp.linearLayout;
-        }
-
-
     }
 
     @Override
@@ -122,27 +111,23 @@ public class AlbumListFragment extends Fragment {
     public void UpdateViewContent() {
 
         Cursor cursor = db.readAllData();
-        if (cursor.getCount() == 0) {
-            Toast.makeText(view.getContext(),
-                    "You have not added any album yet, add your firs one!", Toast.LENGTH_LONG).show();
-        } else {
-            while (cursor.moveToNext()) {
-                ids.add(cursor.getString(0));
-                titles.add(cursor.getString(1));
-                artists.add(cursor.getString(2));
-                year.add(cursor.getInt(3));
-                duration.add(cursor.getFloat(4));
-                Reacts.add(cursor.getString(5));
-                IsEP.add(cursor.getInt(6));
-                Bitmap bmp = BitmapFactory.decodeByteArray(cursor.getBlob(7), 0,
-                        cursor.getBlob(7).length);
-                images.add(bmp);
-                r1.add(cursor.getFloat(8));
-                r2.add(cursor.getFloat(9));
-                r3.add(cursor.getFloat(10));
+        while (cursor.moveToNext()) {
+            ids.add(cursor.getString(0));
+            titles.add(cursor.getString(1));
+            artists.add(cursor.getString(2));
+            year.add(cursor.getInt(3));
+            duration.add(cursor.getFloat(4));
+            Reacts.add(cursor.getString(5));
+            IsEP.add(cursor.getInt(6));
+            Bitmap bmp = BitmapFactory.decodeByteArray(cursor.getBlob(7), 0,
+                    cursor.getBlob(7).length);
+            images.add(bmp);
+            r1.add(cursor.getFloat(8));
+            r2.add(cursor.getFloat(9));
+            r3.add(cursor.getFloat(10));
 
-            }
         }
+
         lay.removeAllViews();
 
         if (ids.size() == 0) {
@@ -168,7 +153,7 @@ public class AlbumListFragment extends Fragment {
                 float rating = (alb.ratings[0] + alb.ratings[1] + alb.ratings[2]) / 3;
 
                 AlbumTupple temp = new AlbumTupple(example, i, alb.name, alb.artist, rating,
-                        alb.duration, alb.year);
+                        alb.duration, alb.year, (TextView) view.findViewById(tempid + 9999));
 
                 Albums.add(temp);
 
@@ -193,66 +178,96 @@ public class AlbumListFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String temp = parent.getItemAtPosition(position).toString();
+                lay.removeAllViews();
                 switch (temp){
                     case "time added":
-                        System.out.println("TIME ADDED");
-//                        lay.setVisibility(View.GONE);
-                        lay.removeAllViews();
-                        for(int i = 0; i < Albums.size(); i++){
-                            lay.addView(Albums.get(i).linearLayout);
-                        }
+                        Collections.sort(Albums, new Comparator<AlbumTupple>() {
+                            @Override
+                            public int compare(AlbumTupple albumTupple, AlbumTupple t1) {
+                                if(albumTupple.pos_as_default > t1.pos_as_default)
+                                    return 1;
+                                else if (albumTupple.pos_as_default < t1.pos_as_default)
+                                    return -1;
+                                else
+                                    return 0;
+                            }
+                        });
                         break;
                     case "title":
-                        Toast.makeText(view.getContext(), "TITLE", Toast.LENGTH_LONG).show();
-                        lay.removeAllViews();
-
-                        /*
-
-                        String tempp;
-                        String[] alb = {"A", "C", "V", "B", "T"};
-                        for(int i=0;i<alb.length;i++){
-                            for(int j=i+1;j<alb.length;j++){
-                                if(alb[i].compareToIgnoreCase(alb[j])>0){
-                                    tempp = alb[i];
-                                    alb[i] = alb[j];
-                                    alb[j] = tempp;
-                                }
+                        Collections.sort(Albums, new Comparator<AlbumTupple>() {
+                            @Override
+                            public int compare(AlbumTupple albumTupple, AlbumTupple t1) {
+                                if(albumTupple.title.compareToIgnoreCase(t1.title) > 0)
+                                    return 1;
+                                else if (albumTupple.title.compareToIgnoreCase(t1.title) < 0)
+                                    return -1;
+                                else
+                                    return 0;
                             }
-
-                        }
-                        for(int i = 0; i < alb.length; i++)
-                            System.out.println(alb[i]);
-                            */
-
-                        AlbumTupple tempp;
-                        for(int i=0;i<Albums.size();i++){
-                            for(int j=i+1;j<Albums.size();j++){
-                                if(Albums.get(i).title.compareToIgnoreCase(Albums.get(j).title)>0){
-                                    tempp = Albums.get(i);
-                                    Albums.get(i).Update(Albums.get(j));
-                                    Albums.get(j).Update(tempp);
-                                }
-                            }
-
-                        }
-                        for (int a = 0 ; a < Albums.size(); a++) {
-//                            if(Albums.get(i).linearLayout.getParent() != null) {
-//                                ((ViewGroup)Albums.get(i).linearLayout.getParent())
-//                                        .removeView(Albums.get(i).linearLayout); // <- fix
-//                            }
-//                            lay.addView(Albums.get(i).linearLayout);
-                            System.out.println(Albums.get(a).title + " AHA");
-                            System.out.println(Albums.get(a).artist);
-                        }
-
-                        System.out.println(Albums.get(0).title + " AHA");
-                        System.out.println(Albums.get(0).artist);
-                        System.out.println(Albums.size());
+                        });
                         break;
-
+                    case "artist name":
+                        Collections.sort(Albums, new Comparator<AlbumTupple>() {
+                            @Override
+                            public int compare(AlbumTupple albumTupple, AlbumTupple t1) {
+                                if(albumTupple.artist.compareToIgnoreCase(t1.artist) > 0)
+                                    return 1;
+                                else if (albumTupple.artist.compareToIgnoreCase(t1.artist) < 0)
+                                    return -1;
+                                else
+                                    return 0;
+                            }
+                        });
+                        break;
+                    case "rating":
+                        Collections.sort(Albums, new Comparator<AlbumTupple>() {
+                            @Override
+                            public int compare(AlbumTupple albumTupple, AlbumTupple t1) {
+                                if(albumTupple.rating < t1.rating)
+                                    return 1;
+                                else if (albumTupple.rating > t1.rating)
+                                    return -1;
+                                else
+                                    return 0;
+                            }
+                        });
+                        break;
+                    case "duration":
+                        Collections.sort(Albums, new Comparator<AlbumTupple>() {
+                            @Override
+                            public int compare(AlbumTupple albumTupple, AlbumTupple t1) {
+                                if(albumTupple.duration < t1.duration)
+                                    return 1;
+                                else if (albumTupple.duration > t1.duration)
+                                    return -1;
+                                else
+                                    return 0;
+                            }
+                        });
+                        break;
+                    case "year":
+                        Collections.sort(Albums, new Comparator<AlbumTupple>() {
+                            @Override
+                            public int compare(AlbumTupple albumTupple, AlbumTupple t1) {
+                                if(albumTupple.year < t1.year)
+                                    return 1;
+                                else if (albumTupple.year > t1.year)
+                                    return -1;
+                                else
+                                    return 0;
+                            }
+                        });
+                        break;
                     default:
 
                     }
+
+                for (int i = 0 ; i < Albums.size(); i++) {
+                    System.out.println(Albums.get(i).title + " AHA");
+                    System.out.println(Albums.get(i).artist);
+                    lay.addView(Albums.get(i).linearLayout);
+                    Albums.get(i).id.setText(String.valueOf(i+1));
+                }
 //                UpdateViewContent(Sort);
             }
 

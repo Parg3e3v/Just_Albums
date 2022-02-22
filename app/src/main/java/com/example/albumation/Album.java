@@ -55,6 +55,7 @@ public class Album {
         // Id
         // ----------------------------------------------------------------------------------------
         TextView txt = new TextView(ct);
+        txt.setId(idL + 9999);
 
         LinearLayout.LayoutParams txtParams =  new LinearLayout.LayoutParams(AlbumListFragment.dp(ct,20), AlbumListFragment.dp(ct,20));
         txtParams.gravity = Gravity.CENTER_VERTICAL;
