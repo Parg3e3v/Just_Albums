@@ -144,6 +144,15 @@ public class AlbumListFragment extends Fragment {
             }
         });
 
+        stBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                getActivity().finish();
+                startActivity(intent);
+            }
+        });
+
         UpdateViewContent();
 
         return view;
