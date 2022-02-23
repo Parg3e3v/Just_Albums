@@ -66,8 +66,6 @@ public class AddActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("-----" + Duratio.getText().toString() + "-------");
-                System.out.println("ABAB");
                 try {
                     if (imgURI.toString() != "") {
                         DBHelper db = new DBHelper(AddActivity.this);
@@ -77,14 +75,8 @@ public class AddActivity extends AppCompatActivity {
                         String[] timeTexts = timeText.split(":");
                         Float time = Float.valueOf(timeTexts[0]) + (Float.valueOf(timeTexts[1]) / 60) +
                                 (Float.valueOf(timeTexts[2]) / 3600);
-                        System.out.println(time);
-
-//                        IsEP = 0;
-//                        if (IsEpBut.isChecked())
-//                            IsEP = 1;
 
                         IsEP = IsEpBut.isChecked() ? 1 : 0;
-                        System.out.println(Liked.getRating() + "--" + Recogn.getRating() + "--" + Your.getRating());
                         db.AddAlbum(titleInput.getText().toString(), artistInput.getText().toString(),
                                 React.getText().toString(), IsEP,
                                 Integer.valueOf(Year.getText().toString()),

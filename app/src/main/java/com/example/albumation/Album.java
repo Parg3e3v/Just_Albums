@@ -143,7 +143,6 @@ public class Album {
         dt.setLayoutParams(dot);
         dt.setTextSize(16);
         nameT.measure(0, 0);
-        System.out.println("Width: " + nameT.getMeasuredWidth() + artist);
         if (nameT.getMeasuredWidth() >= 551) {
             dt.setText("...");
         }

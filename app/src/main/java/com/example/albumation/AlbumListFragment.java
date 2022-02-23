@@ -2,10 +2,12 @@ package com.example.albumation;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -38,13 +41,18 @@ import java.util.Comparator;
 public class AlbumListFragment extends Fragment {
     View view;
 
+    int rollerDrUp, rollerDrDown, settingsDr;
+
+    public static final int tempid = 9999;
+
     public LinearLayout lay;
+    public ImageButton roller, stBut;
+    boolean IsDown = true;
     public NestedScrollView contCont;
     public TextView first;
     ArrayList<AlbumTupple> Albums;
     public DBHelper db;
     public static ArrayList<String> ids;
-//    ArrayList<LinearLayout> ALbIds;
     public static ArrayList<String> titles, artists, Reacts;
     public static ArrayList<Bitmap> images;
     public static ArrayList<Float> r1, r2, r3, duration;
@@ -94,9 +102,47 @@ public class AlbumListFragment extends Fragment {
         r3 = new ArrayList<Float>();
         duration = new ArrayList<Float>();
         year = new ArrayList<Integer>();
+        roller = (ImageButton) view.findViewById(R.id.roller);
+        stBut = (ImageButton) view.findViewById(R.id.settings);
 
         Albums = new ArrayList<AlbumTupple>();
-//        ALbIds = new ArrayList<LinearLayout>();
+
+
+        // -------------------------------------------------------------------------
+        int nightModeFlags =
+                getContext().getResources().getConfiguration().uiMode &
+                        Configuration.UI_MODE_NIGHT_MASK;
+        switch (nightModeFlags) {
+            case Configuration.UI_MODE_NIGHT_YES:
+                rollerDrDown = R.drawable.down_white;
+                rollerDrUp = R.drawable.up_white;
+                settingsDr = R.drawable.settings_white;
+                break;
+
+            case Configuration.UI_MODE_NIGHT_NO:
+
+            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                rollerDrDown = R.drawable.down;
+                rollerDrUp = R.drawable.up;
+                settingsDr = R.drawable.settings;
+                break;
+        }
+        roller.setBackgroundResource(IsDown ? rollerDrDown: rollerDrUp);
+        stBut.setBackgroundResource(settingsDr);
+        // ------------------------------------------------------------------------
+        roller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                IsDown = !IsDown;
+                roller.setBackgroundResource(IsDown ? rollerDrDown: rollerDrUp);
+                lay.removeAllViews();
+                Collections.reverse(Albums);
+                for (int i = 0 ; i < Albums.size(); i++) {
+                    lay.addView(Albums.get(i).linearLayout);
+                    Albums.get(i).id.setText(String.valueOf(i+1));
+                }
+            }
+        });
 
         UpdateViewContent();
 
@@ -136,24 +182,22 @@ public class AlbumListFragment extends Fragment {
             first.setVisibility(View.GONE);
         }
 
-
-//        if (Albums.size() == 0) {
             for (int i = 0; i < ids.size(); i++) {
                 Album alb = new Album(titles.get(i), artists.get(i), Reacts.get(i), IsEP.get(i),
                         images.get(i), new float[]{r1.get(i), r2.get(i), r3.get(i)}, i+1,
                         duration.get(i), year.get(i));
 
-                int tempid = 9999 + i;
+                int tempid_ = tempid + i;
 
                 alb.LoadAlbum(alb.id, alb.name, alb.artist, alb.react, alb.IsEP, alb.img,
-                        alb.ratings, lay, view.getContext(), tempid);
+                        alb.ratings, lay, view.getContext(), tempid_);
 
-                LinearLayout example = view.findViewById(tempid);
+                LinearLayout example = view.findViewById(tempid_);
 
                 float rating = (alb.ratings[0] + alb.ratings[1] + alb.ratings[2]) / 3;
 
                 AlbumTupple temp = new AlbumTupple(example, i, alb.name, alb.artist, rating,
-                        alb.duration, alb.year, (TextView) view.findViewById(tempid + 9999));
+                        alb.duration, alb.year, (TextView) view.findViewById(tempid_ + tempid));
 
                 Albums.add(temp);
 
@@ -165,7 +209,6 @@ public class AlbumListFragment extends Fragment {
                     public void onClick(View view) {
                         Intent intent = new Intent(view.getContext(), EditActivity.class);
                         intent.putExtra("id", String.valueOf(alb.id));
-//                        intent.putExtra("Rating1", alb.ratings);
                         getActivity().finish();
                         startActivity(intent);
                     }
@@ -263,12 +306,9 @@ public class AlbumListFragment extends Fragment {
                     }
 
                 for (int i = 0 ; i < Albums.size(); i++) {
-                    System.out.println(Albums.get(i).title + " AHA");
-                    System.out.println(Albums.get(i).artist);
                     lay.addView(Albums.get(i).linearLayout);
                     Albums.get(i).id.setText(String.valueOf(i+1));
                 }
-//                UpdateViewContent(Sort);
             }
 
             @Override

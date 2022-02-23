@@ -124,11 +124,14 @@ public class EditActivity extends AppCompatActivity {
 //                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 //                imgByte = baos.toByteArray();
                 int isep = EP.isChecked() ? 1 : 0;
+                String[] timeTexts = duration.getText().toString().split(":");
 
+                Float time = Float.valueOf(timeTexts[0]) + (Float.valueOf(timeTexts[1]) / 60) +
+                        (Float.valueOf(timeTexts[2]) / 3600);
                 db.UpdateData(String.valueOf(id+1), title.getText().toString(),
                         artist.getText().toString(), react.getText().toString(),
                         isep, Integer.parseInt(
-                        year.getText().toString()), timeText,
+                        year.getText().toString()), time,
                         liked.getRating(), tr_recn.getRating(), your.getRating(), imgByte);
 
                 Intent intent = new Intent(EditActivity.this, MainActivity.class);

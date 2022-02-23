@@ -65,6 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:text="Liked Songs"
+        android:textColor="@color/textColor"
         app:layout_constraintBottom_toTopOf="@+id/liked_ratingBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -87,6 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:text="Track recognition"
+        android:textColor="@color/textColor"
         app:layout_constraintBottom_toTopOf="@+id/tr_recogn_ratingBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -110,6 +112,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:text="Your rating"
+        android:textColor="@color/textColor"
         app:layout_constraintBottom_toTopOf="@+id/your_ratingBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

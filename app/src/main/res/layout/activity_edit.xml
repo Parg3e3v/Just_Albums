@@ -66,6 +66,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="29dp"
         android:text="Liked Songs"
+        android:textColor="@color/textColor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextTime_edit"
         tools:ignore="MissingConstraints" />
@@ -88,6 +89,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="60dp"
         android:text="Track recognition"
+        android:textColor="@color/textColor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_edit" />
 
@@ -109,6 +111,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="60dp"
         android:text="Your rating"
+        android:textColor="@color/textColor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2_edit" />
 

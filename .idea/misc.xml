@@ -3,14 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/drawable-night/ic_new_ratingbar.xml" value="0.1665" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.189" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/drawable/customborder.xml" value="0.1895" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/drawable/ic_new_ratingbar.xml" value="0.2005" />
+        <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/drawable/ic_new_ratingbar_wh.xml" value="0.1665" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/drawable/layout.xml" value="0.189" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/layout/activity_add.xml" value="0.25" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/layout/activity_edit.xml" value="0.25" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/layout/activity_main.xml" value="0.22" />
-        <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/layout/fragment_album_list.xml" value="0.5" />
+        <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/layout/activity_settings.xml" value="0.15729166666666666" />
+        <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/layout/fragment_album_list.xml" value="0.3333333333333333" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/layout/fragment_album_top.xml" value="0.18125" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/mipmap-anydpi-v26/icon.xml" value="0.189" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/mipmap-anydpi-v26/icon_round.xml" value="0.2005" />
