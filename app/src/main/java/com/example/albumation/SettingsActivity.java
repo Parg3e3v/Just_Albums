@@ -1,10 +1,14 @@
 package com.example.albumation;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -15,31 +19,119 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    public String path = "/data/data/com.example.albumation/databases";
+
     ImageButton arrow;
-    LinearLayout import_export;
+    LinearLayout import_export, delete_db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         arrow = (ImageButton) findViewById(R.id.fromStToMain);
         import_export = (LinearLayout) findViewById(R.id.import_export);
+        delete_db = (LinearLayout) findViewById(R.id.delete_db);
 
+        int nightModeFlags =
+                getApplicationContext().getResources().getConfiguration().uiMode &
+                        Configuration.UI_MODE_NIGHT_MASK;
+        switch (nightModeFlags) {
+            case Configuration.UI_MODE_NIGHT_YES:
+                arrow.setBackgroundResource(R.drawable.ic_baseline_arrow_back_24);
+                break;
+
+            case Configuration.UI_MODE_NIGHT_NO:
+
+            case Configuration.UI_MODE_NIGHT_UNDEFINED:
+                arrow.setBackgroundResource(R.drawable.ic_baseline_arrow_back_24_black);
+                break;
+        }
+
+
+        // IMPORT / EXPORT
+        //-----------------------------------------------------------------------------------------
         import_export.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent()
-                        .setType("*/*")
-                        .setAction(Intent.ACTION_GET_CONTENT);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+                String[] txt = {"Import", "Export"};
+                builder.setItems(txt, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (txt[i] == txt[0]){
+                            Intent intent = new Intent()
+                                    .setType("*/*")
+                                    .setAction(Intent.ACTION_GET_CONTENT);
 
-                startActivityForResult(Intent.createChooser(intent, "Select a file"), 123);
+                            startActivityForResult(Intent.createChooser(intent,
+                                    "Select a file"), 123);
+                        }else if (txt[i] == txt[1]){
+                            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                            startActivityForResult(intent, 100);
+                            Toast.makeText(getApplicationContext(), "Export", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                        .setCancelable(true)
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.setTitle("Import/Export");
+                alertDialog.show();
             }
         });
+        //-----------------------------------------------------------------------------------------
 
+
+
+        // DELETE DB
+        //-----------------------------------------------------------------------------------------
+        delete_db.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+                builder.setMessage("Are you sure you want to delete your Database?")
+                        .setCancelable(true)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                try {
+                                    // delete the original file
+                                    new File(path + "/JustAlbums.db").delete();
+                                }
+                                catch (Exception e) {
+                                    Log.e("tag", e.getMessage());
+                                }
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.setTitle("Delete Database");
+                alertDialog.show();
+
+            }
+        });
+        //-----------------------------------------------------------------------------------------
+
+
+        // BACK ARROW
+        //-----------------------------------------------------------------------------------------
         arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,12 +141,16 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
         SettingsActivity.this.finish();
         startActivity(intent);
     }
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -62,35 +158,59 @@ public class SettingsActivity extends AppCompatActivity {
             Uri selectedfile = data.getData();
             //"file//" + selectedfile.getPath().split("/document/raw:")[1]
 //            String path = selectedfile.getPath().split("/document/raw:")[1];
-            copyFile(selectedfile,
-                    "/data/data/com.example.albumation/databases");
+            if(copyFile(selectedfile, Uri.parse(path), true))
+                Toast.makeText(getApplicationContext(), "Imported successfully",
+                        Toast.LENGTH_SHORT).show();
+
+        }
+        else if (requestCode == 100 && resultCode == RESULT_OK){
+            Uri pathToSave = Uri.parse(data.getData().toString().split("content:")[1]);
+
+            System.out.println(pathToSave + "------AAAAA");
+
+
+            copyFile(Uri.parse("file://" + path + "/JustAlbums.db"), pathToSave,
+                                            false);
         }
     }
 
-    private void copyFile(Uri uri, String outputPath) {
 
-        try {
-            // delete the original file
-            new File(outputPath + "/JustAlbums.db").delete();
-        }
-        catch (Exception e) {
-            Log.e("tag", e.getMessage());
+
+    // Copy Function
+    private boolean copyFile(Uri uri, Uri outputPath, boolean Delete) {
+        if (Delete) {
+            try {
+                // delete the original file
+                new File(outputPath + "/JustAlbums.db").delete();
+            } catch (Exception e) {
+                Log.e("tag", e.getMessage());
+            }
         }
         InputStream in = null;
         OutputStream out = null;
         try {
 
             //create output directory if it doesn't exist
-            File dir = new File (outputPath);
+            File dir = new File (outputPath.getPath());
             if (!dir.exists())
             {
                 dir.mkdirs();
             }
 
 
-            in = new FileInputStream(getApplicationContext().getContentResolver().openFileDescriptor(uri, "r").getFileDescriptor());
-            out = new FileOutputStream(outputPath + "/JustAlbums.db");
+            in = new FileInputStream(getApplicationContext().getContentResolver()
+                    .openFileDescriptor(uri, "r").getFileDescriptor());
+            try {
+                out = new FileOutputStream(outputPath + "/JustAlbums.db");
+            }catch (Exception e){
+                File gpxfile = new File(outputPath.getPath(), "JustAlbums.db");
+                FileWriter writer = new FileWriter(gpxfile);
+                writer.flush();
+                writer.close();
 
+                out = new FileOutputStream(outputPath + "/JustAlbums.db");
+
+            }
             byte[] buffer = new byte[1024];
             int read;
             while ((read = in.read(buffer)) != -1) {
@@ -104,13 +224,19 @@ public class SettingsActivity extends AppCompatActivity {
             out.close();
             out = null;
 
+            return true;
+
         }  catch (FileNotFoundException fnfe1) {
             Log.e("tag", fnfe1.getMessage());
-            Toast.makeText(getApplicationContext(), "Can't import file", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Can't import/export file",
+                    Toast.LENGTH_SHORT).show();
+            return false;
         }
         catch (Exception e) {
             Log.e("tag", e.getMessage());
-            Toast.makeText(getApplicationContext(), "Can't import file", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Can't import/export file",
+                    Toast.LENGTH_SHORT).show();
+            return false;
         }
 
     }

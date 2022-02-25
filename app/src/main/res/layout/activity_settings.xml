@@ -55,6 +55,7 @@
                     android:id="@+id/import_export"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@color/colorPrimary"
                     android:orientation="horizontal">
 
@@ -63,6 +64,25 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:text="Import / Export"
+                        android:textSize="16dp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/delete_db"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/colorPrimary"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Delete Database"
+                        android:textColor="#FF0000"
                         android:textSize="16dp" />
 
 
