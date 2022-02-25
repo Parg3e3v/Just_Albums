@@ -164,23 +164,28 @@ public class AlbumListFragment extends Fragment {
     }
 
     public void UpdateViewContent() {
+        try {
+            Cursor cursor = db.readAllData();
+            while (cursor.moveToNext()) {
+                ids.add(cursor.getString(0));
+                titles.add(cursor.getString(1));
+                artists.add(cursor.getString(2));
+                year.add(cursor.getInt(3));
+                duration.add(cursor.getFloat(4));
+                Reacts.add(cursor.getString(5));
+                IsEP.add(cursor.getInt(6));
+                Bitmap bmp = BitmapFactory.decodeByteArray(cursor.getBlob(7), 0,
+                        cursor.getBlob(7).length);
+                images.add(bmp);
+                r1.add(cursor.getFloat(8));
+                r2.add(cursor.getFloat(9));
+                r3.add(cursor.getFloat(10));
 
-        Cursor cursor = db.readAllData();
-        while (cursor.moveToNext()) {
-            ids.add(cursor.getString(0));
-            titles.add(cursor.getString(1));
-            artists.add(cursor.getString(2));
-            year.add(cursor.getInt(3));
-            duration.add(cursor.getFloat(4));
-            Reacts.add(cursor.getString(5));
-            IsEP.add(cursor.getInt(6));
-            Bitmap bmp = BitmapFactory.decodeByteArray(cursor.getBlob(7), 0,
-                    cursor.getBlob(7).length);
-            images.add(bmp);
-            r1.add(cursor.getFloat(8));
-            r2.add(cursor.getFloat(9));
-            r3.add(cursor.getFloat(10));
-
+            }
+        }catch (Exception e){
+            Log.e("tag", e.getMessage());
+            Toast.makeText(view.getContext(), "Can't load database", Toast.LENGTH_SHORT).show();
+            ids.removeAll(ids);
         }
 
         lay.removeAllViews();
