@@ -41,7 +41,7 @@ import java.util.Comparator;
 public class AlbumListFragment extends Fragment {
     View view;
 
-    int rollerDrUp, rollerDrDown, settingsDr;
+    int rollerDrUp, rollerDrDown;
 
     public static final int tempid = 9999;
 
@@ -116,7 +116,6 @@ public class AlbumListFragment extends Fragment {
             case Configuration.UI_MODE_NIGHT_YES:
                 rollerDrDown = R.drawable.down_white;
                 rollerDrUp = R.drawable.up_white;
-                settingsDr = R.drawable.settings_white;
                 break;
 
             case Configuration.UI_MODE_NIGHT_NO:
@@ -124,11 +123,9 @@ public class AlbumListFragment extends Fragment {
             case Configuration.UI_MODE_NIGHT_UNDEFINED:
                 rollerDrDown = R.drawable.down;
                 rollerDrUp = R.drawable.up;
-                settingsDr = R.drawable.settings;
                 break;
         }
         roller.setBackgroundResource(IsDown ? rollerDrDown: rollerDrUp);
-        stBut.setBackgroundResource(settingsDr);
         // ------------------------------------------------------------------------
         roller.setOnClickListener(new View.OnClickListener() {
             @Override

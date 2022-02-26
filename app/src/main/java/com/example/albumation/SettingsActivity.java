@@ -2,13 +2,16 @@ package com.example.albumation;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -23,6 +26,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.channels.FileChannel;
+import java.util.Random;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -37,21 +42,6 @@ public class SettingsActivity extends AppCompatActivity {
         arrow = (ImageButton) findViewById(R.id.fromStToMain);
         import_export = (LinearLayout) findViewById(R.id.import_export);
         delete_db = (LinearLayout) findViewById(R.id.delete_db);
-
-        int nightModeFlags =
-                getApplicationContext().getResources().getConfiguration().uiMode &
-                        Configuration.UI_MODE_NIGHT_MASK;
-        switch (nightModeFlags) {
-            case Configuration.UI_MODE_NIGHT_YES:
-                arrow.setBackgroundResource(R.drawable.ic_baseline_arrow_back_24);
-                break;
-
-            case Configuration.UI_MODE_NIGHT_NO:
-
-            case Configuration.UI_MODE_NIGHT_UNDEFINED:
-                arrow.setBackgroundResource(R.drawable.ic_baseline_arrow_back_24_black);
-                break;
-        }
 
 
         // IMPORT / EXPORT
@@ -72,9 +62,47 @@ public class SettingsActivity extends AppCompatActivity {
                             startActivityForResult(Intent.createChooser(intent,
                                     "Select a file"), 123);
                         }else if (txt[i] == txt[1]){
-                            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                            startActivityForResult(intent, 100);
-                            Toast.makeText(getApplicationContext(), "Export", Toast.LENGTH_SHORT).show();
+//                            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+//                            startActivityForResult(intent, 100);
+
+//                            Intent shareIntent = new Intent();
+//                            shareIntent.setAction(Intent.ACTION_SEND);
+//                            shareIntent.putExtra(Intent.EXTRA_STREAM,
+//                                    "file://" + path + "/JustAlbums.db");
+//                            shareIntent.setType("application/x-sqlite3");
+//                            startActivity(shareIntent);
+
+                            
+                            /*
+                            Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+                            File fileWithinMyDir = new File(path + "/JustAlbums.db");
+
+                            if(fileWithinMyDir.exists()) {
+                                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                                StrictMode.setVmPolicy(builder.build());
+                                intentShareFile.setType("application/x-sqlite3");
+                                intentShareFile.putExtra(Intent.EXTRA_STREAM,
+                                        Uri.parse("file://" + path + "/JustAlbums.db"));
+                                intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
+                                        "Sharing File...");
+                                intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
+                                startActivity(Intent.createChooser(intentShareFile, "Share My File"));
+                            }else
+                                Toast.makeText(getApplicationContext(), "Database not exists",
+                                        Toast.LENGTH_SHORT).show();
+                                        
+                                        
+                             */
+                            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                            StrictMode.setVmPolicy(builder.build());
+                            Intent intent = new Intent(Intent.ACTION_SEND);
+                            intent.setType("application/octet-stream");
+
+
+
+                            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path + "/JustAlbums.db"));
+
+                            startActivity(Intent.createChooser(intent, "Backup via:"));
                         }
                     }
                 })
@@ -156,8 +184,6 @@ public class SettingsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 123 && resultCode == RESULT_OK) {
             Uri selectedfile = data.getData();
-            //"file//" + selectedfile.getPath().split("/document/raw:")[1]
-//            String path = selectedfile.getPath().split("/document/raw:")[1];
             if(copyFile(selectedfile, Uri.parse(path), true))
                 Toast.makeText(getApplicationContext(), "Imported successfully",
                         Toast.LENGTH_SHORT).show();
@@ -165,9 +191,6 @@ public class SettingsActivity extends AppCompatActivity {
         }
         else if (requestCode == 100 && resultCode == RESULT_OK){
             Uri pathToSave = Uri.parse(data.getData().toString().split("content:")[1]);
-
-            System.out.println(pathToSave + "------AAAAA");
-
 
             copyFile(Uri.parse("file://" + path + "/JustAlbums.db"), pathToSave,
                                             false);
@@ -240,4 +263,6 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
     }
+
+
 }
