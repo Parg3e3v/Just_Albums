@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
+import java.util.Objects;
 import java.util.Random;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -73,36 +74,57 @@ public class SettingsActivity extends AppCompatActivity {
 //                            startActivity(shareIntent);
 
                             
-                            /*
-                            Intent intentShareFile = new Intent(Intent.ACTION_SEND);
-                            File fileWithinMyDir = new File(path + "/JustAlbums.db");
 
-                            if(fileWithinMyDir.exists()) {
-                                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-                                StrictMode.setVmPolicy(builder.build());
-                                intentShareFile.setType("application/x-sqlite3");
-                                intentShareFile.putExtra(Intent.EXTRA_STREAM,
-                                        Uri.parse("file://" + path + "/JustAlbums.db"));
-                                intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
-                                        "Sharing File...");
-                                intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
-                                startActivity(Intent.createChooser(intentShareFile, "Share My File"));
+//                            Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+                            File file = new File(path + "/JustAlbums.db");
+
+                            if(file.exists()) {
+//                                StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+//                                StrictMode.setVmPolicy(builder.build());
+//                                intentShareFile.setType("application/x-sqlite3");
+//                                intentShareFile.putExtra(Intent.EXTRA_STREAM,
+//                                        Uri.parse("file://" + path + "/JustAlbums.db"));
+//                                intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
+//                                        "Sharing File...");
+//                                intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
+//                                startActivity(Intent.createChooser(intentShareFile, "Share My File"));
+
+//                                try {
+                                    Intent intent = new Intent(Intent.ACTION_SEND);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                    Uri uri = Uri.parse("file://" + path + ".provider" + "/JustAlbums.db");
+//                                    Uri uri = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", file);
+                                Uri uri = FileProvider.getUriForFile(SettingsActivity.this, "com.gs.common.fileprovider", file);
+                                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                    intent.setType("application/x-sqlite3");
+                                    startActivity(Intent.createChooser(intent, "Share by"));
+//
+//                                }catch (Exception e){
+//                                    e.printStackTrace();
+//                                    Log.e("tag", e.getMessage());
+//                                }
                             }else
                                 Toast.makeText(getApplicationContext(), "Database not exists",
                                         Toast.LENGTH_SHORT).show();
                                         
                                         
-                             */
-                            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-                            StrictMode.setVmPolicy(builder.build());
+
+//                            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+//                            StrictMode.setVmPolicy(builder.build());
+                            /*
                             Intent intent = new Intent(Intent.ACTION_SEND);
-                            intent.setType("application/octet-stream");
+//                            intent.setType("application/octet-stream");
+                            intent.setType("text/plain");
 
 
 
                             intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + path + "/JustAlbums.db"));
+//                            intent.putExtra(Intent.EXTRA_STREAM, "It's..... Sharing?");
+                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            startActivity(Intent.createChooser(intent, "Share by..."));
+                            */
 
-                            startActivity(Intent.createChooser(intent, "Backup via:"));
                         }
                     }
                 })
@@ -160,13 +182,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         // BACK ARROW
         //-----------------------------------------------------------------------------------------
-        arrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-                SettingsActivity.this.finish();
-                startActivity(intent);
-            }
+        arrow.setOnClickListener(view -> {
+            Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+            SettingsActivity.this.finish();
+            startActivity(intent);
         });
     }
 
