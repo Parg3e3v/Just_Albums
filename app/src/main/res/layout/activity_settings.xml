@@ -70,6 +70,24 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/night_mode_switch_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/colorPrimary"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Dark Mode"
+                        android:textSize="16dp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/delete_db"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -87,6 +105,8 @@
 
 
                 </LinearLayout>
+
+
 
 
             </LinearLayout>

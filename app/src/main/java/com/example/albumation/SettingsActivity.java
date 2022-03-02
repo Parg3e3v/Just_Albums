@@ -3,12 +3,16 @@ package com.example.albumation;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,36 +27,61 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.channels.FileChannel;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    public String dstPath;
+    private static final int MY_PERMISSION_REQUEST_STORAGE = 1;
     public String path = "/data/data/com.example.albumation/databases";
-//    private String DB_PATH =
-//            Environment.getDataDirectory().getPath()+ File.separator +
-//                    "data/com.example.albumation/databases/JustAlbums.db";
     ImageButton arrow;
-    LinearLayout import_export, delete_db;
+    LinearLayout import_export, delete_db, drkmode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         arrow = (ImageButton) findViewById(R.id.fromStToMain);
         import_export = (LinearLayout) findViewById(R.id.import_export);
         delete_db = (LinearLayout) findViewById(R.id.delete_db);
+        drkmode = (LinearLayout) findViewById(R.id.night_mode_switch_layout);
 
-        dstPath = Environment.getExternalStorageDirectory() + File.separator + "myApp" + File.separator;
-        File dst = new File(dstPath);
-        File file = new File(path + "/JustAlbums.db");
+        if (ContextCompat.checkSelfPermission(SettingsActivity.this,
+                WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            if (ActivityCompat.shouldShowRequestPermissionRationale(SettingsActivity.this,
+                    WRITE_EXTERNAL_STORAGE))
+                ActivityCompat.requestPermissions(SettingsActivity.this, new String[]{
+                        WRITE_EXTERNAL_STORAGE}, MY_PERMISSION_REQUEST_STORAGE);
+            else
+                ActivityCompat.requestPermissions(SettingsActivity.this, new String[]{
+                        WRITE_EXTERNAL_STORAGE}, MY_PERMISSION_REQUEST_STORAGE);
 
-        System.out.println(dstPath + "EXT___");
+        drkmode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+                String[] txt = {"On", "Off", "By System Default"};
+                builder.setItems(txt, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getApplicationContext(), "Not working yet", Toast.LENGTH_LONG).show();
+                    }
+
+                })
+                        .setCancelable(true)
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.setTitle("Dark mode");
+                alertDialog.show();
+            }
+        });
+
         // IMPORT / EXPORT
         //-----------------------------------------------------------------------------------------
         import_export.setOnClickListener(new View.OnClickListener() {
@@ -151,12 +180,15 @@ public class SettingsActivity extends AppCompatActivity {
 
                                 Intent intent = new Intent(Intent.ACTION_SEND);
                                 intent.setType("application/x-sqlite3");
+                                Uri uri = Uri.parse("file://" + file);
                                 intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + file));
 
                                 startActivity(Intent.createChooser(intent, "Share database"));
                             }
                         }else if (txt[i] == txt[2]){
-                            copyFile(Uri.fromFile(file), Uri.fromFile(dst), false);
+//                            copyFile(Uri.fromFile(file), Uri.fromFile(dst), false);
+                            copyAsset("JustAlbums.db");
+
                         }
                     }
                 })
@@ -228,7 +260,76 @@ public class SettingsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case MY_PERMISSION_REQUEST_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    if (ContextCompat.checkSelfPermission(SettingsActivity.this,
+                            WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                        Toast.makeText(this, "Please give permission for program",
+                                Toast.LENGTH_SHORT).show();
+        }
+    }
 
+    private void copyAsset(String filename){
+        String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyDatabases";
+        File dir = new File(dirPath);
+        if(!dir.exists()) {
+            dir.mkdirs();
+            if (!dir.exists()){
+                dirPath = "/self/primary/MyDatabases";
+                dir = new File(dirPath);
+                dir.mkdir();
+                System.out.println("Chgidem");
+                if (!dir.exists()) {
+                    System.out.println("ne smeshno");
+                }
+                }
+        }
+        MediaScannerConnection.scanFile(this, new String[] { dir.toString() }, null,
+                new MediaScannerConnection.OnScanCompletedListener() {
+                    public void onScanCompleted(String path, Uri uri) {
+                        Log.i("ExternalStorage", "Scanned " + path + ":");
+                        Log.i("ExternalStorage", "-> uri=" + uri);
+                    }
+                });
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = new FileInputStream(String.valueOf(Uri.parse(path + "/" + filename)));
+            File outFile = new File(dirPath, filename);
+            out = new FileOutputStream(outFile);
+            copyFileToExternal(in, out);
+            Toast.makeText(this, "Saved successfully", Toast.LENGTH_SHORT).show();
+        }catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show();
+        }finally {
+            if (in != null)
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            if (out != null)
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+        }
+    }
+
+    private void copyFileToExternal(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
+        }
+
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -240,12 +341,12 @@ public class SettingsActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
 
         }
-        else if (requestCode == 100 && resultCode == RESULT_OK){
-            Uri pathToSave = Uri.parse(data.getData().toString().split("content:")[1]);
-
-            copyFile(Uri.parse("file://" + path + "/JustAlbums.db"), pathToSave,
-                                            false);
-        }
+//        else if (requestCode == 100 && resultCode == RESULT_OK){
+//            Uri pathToSave = Uri.parse(data.getData().toString().split("content:")[1]);
+//
+//            copyFile(Uri.parse("file://" + path + "/JustAlbums.db"), pathToSave,
+//                                            false);
+//        }
     }
 
 
@@ -269,9 +370,6 @@ public class SettingsActivity extends AppCompatActivity {
             if (!dir.exists())
             {
                 dir.mkdirs();
-                System.out.println(outputPath.getPath() + "----------");
-                File file = new File(dir, "JustAlbums.db");
-//                file.createNewFile();
             }
 
 
