@@ -118,11 +118,6 @@ public class EditActivity extends AppCompatActivity {
         updateBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-//                Bitmap bitmap = ((BitmapDrawable) imgBut.getDrawable()).getBitmap();
-//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-//                imgByte = baos.toByteArray();
                 int isep = EP.isChecked() ? 1 : 0;
                 String[] timeTexts = duration.getText().toString().split(":");
 
