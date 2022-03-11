@@ -6,7 +6,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.example.albumation"
+        applicationId "com.craft3r.JustAlbums"
         minSdk 21
         targetSdk 32
         versionCode 1

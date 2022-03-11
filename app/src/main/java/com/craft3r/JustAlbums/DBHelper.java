@@ -1,12 +1,10 @@
-package com.example.albumation;
+package com.craft3r.JustAlbums;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.media.Image;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -21,7 +19,10 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String COLUMN_NAME = "_name";
     private static final String COLUMN_ARTIST = "_artist";
     private static final String COLUMN_YEAR = "_year";
-    private static final String COLUMN_DURATION = "_DURATION";
+    private static final String COLUMN_DURATION = "_duration";
+    private static final String COLUMN_TRCOUNT = "_trcount";
+    private static final String COLUMN_LINK = "_link";
+    private static final String COLUMN_LINKTEXT = "_linktext";
     private static final String COLUMN_REACT = "_react";
     private static final String COLUMN_ISEP = "_IsEP";
     private static final String COLUMN_IMAGE = "_img";
@@ -49,6 +50,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         COLUMN_ARTIST + " TEXT, " +
                         COLUMN_YEAR + " INTEGER, " +
                         COLUMN_DURATION + " REAL, " +
+                        COLUMN_TRCOUNT + " INT, " +
+                        COLUMN_LINK + " TEXT, " +
+                        COLUMN_LINKTEXT + " TEXT, " +
                         COLUMN_REACT + " TEXT, " +
                         COLUMN_ISEP + " INTEGER, " +
                         COLUMN_IMAGE + " BLOB, " +
@@ -66,7 +70,8 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     void AddAlbum(String title, String artist, String react, int IsEP,
-                  int year, float dur, float rating1, float rating2, float rating3, byte[] img){
+                  int year, float dur, int tr_count, String link, String linkText, float rating1,
+                  float rating2, float rating3, byte[] img){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
@@ -74,6 +79,9 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_ARTIST, artist);
         cv.put(COLUMN_YEAR, year);
         cv.put(COLUMN_DURATION, dur);
+        cv.put(COLUMN_TRCOUNT, tr_count);
+        cv.put(COLUMN_LINK, link);
+        cv.put(COLUMN_LINKTEXT, linkText);
         cv.put(COLUMN_REACT, react);
         cv.put(COLUMN_ISEP, IsEP);
         cv.put(COLUMN_RATING1, rating1);
@@ -103,8 +111,8 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void UpdateData(String row_id,String title, String artist, String react, int IsEP,
-                           int year, float dur, float rating1,
-                           float rating2, float rating3, byte[] img){
+                           int year, float dur, int tr_count, String link, String linkText,
+                           float rating1, float rating2, float rating3, byte[] img){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
@@ -112,6 +120,9 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_ARTIST, artist);
         cv.put(COLUMN_YEAR, year);
         cv.put(COLUMN_DURATION, dur);
+        cv.put(COLUMN_TRCOUNT, tr_count);
+        cv.put(COLUMN_LINK, link);
+        cv.put(COLUMN_LINKTEXT, linkText);
         cv.put(COLUMN_REACT, react);
         cv.put(COLUMN_ISEP, IsEP);
         cv.put(COLUMN_RATING1, rating1);

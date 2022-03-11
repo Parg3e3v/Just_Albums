@@ -1,10 +1,8 @@
-package com.example.albumation;
+package com.craft3r.JustAlbums;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.util.Base64;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,18 +11,16 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import java.io.ByteArrayOutputStream;
-
 public class Album {
-    public String name, artist, react;
+    public String name, artist, react, lName, link;
     public float[] ratings;
     public int id;
     public Bitmap img;
-    public int year, IsEP;
+    public int year, IsEP, count;
     public float duration;
 
-    public Album(String name, String artist, String react, int IsEp, Bitmap img,
-                 float[] ratings, int id, float duration, int year){
+    public Album(String name, String artist, String react, int IsEp, Bitmap img, float[] ratings,
+                 int id, float duration, int count, String lName, String link, int year){
         this.name = name;
         this.artist = artist;
         this.react = react;
@@ -33,10 +29,13 @@ public class Album {
         this.ratings = ratings;
         this.id = id;
         this.duration = duration;
+        this.count = count;
+        this.lName = lName;
+        this.link = link;
         this.year = year;
     }
 
-    public static void LoadAlbum(int id,String name, String artist, String react, int IsEp,
+    public static void LoadAlbum(int id,String name, String artist, int IsEp,
                                  Bitmap img, float[] ratings, LinearLayout lay, Context ct,
                                  int idL){
         // main container

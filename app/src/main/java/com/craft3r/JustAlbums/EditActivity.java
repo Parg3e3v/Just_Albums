@@ -1,4 +1,4 @@
-package com.example.albumation;
+package com.craft3r.JustAlbums;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,10 +23,10 @@ import java.io.IOException;
 
 public class EditActivity extends AppCompatActivity {
     public DBHelper db;
-    EditText title, artist, duration, year, react;
+    EditText title, artist, duration, count, link, lName, year, react;
     RatingBar liked, tr_recn, your;
     ImageButton imgBut;
-    Button cancel, updateBut;
+    Button cancel, updateBut, linkBut;
     public Uri imgURI;
     CheckBox EP;
 
@@ -47,6 +47,9 @@ public class EditActivity extends AppCompatActivity {
         title = (EditText) findViewById(R.id.title_edittext_edit);
         artist = (EditText) findViewById(R.id.artist_edittext_edit);
         duration = (EditText) findViewById(R.id.editTextTime_edit);
+        count = (EditText) findViewById(R.id.track_count_edittext_edit);
+        link = (EditText) findViewById(R.id.link_edittext_edit);
+        lName = (EditText) findViewById(R.id.link_name_edittext_edit);
         year = (EditText) findViewById(R.id.edit_text_year_edit);
         react = (EditText) findViewById(R.id.react_edit);
         EP = (CheckBox) findViewById(R.id.checkBox_edit);
@@ -56,16 +59,14 @@ public class EditActivity extends AppCompatActivity {
         your = (RatingBar) findViewById(R.id.your_ratingBar_edit);
         updateBut = (Button) findViewById(R.id.button_update);
         cancel = (Button) findViewById(R.id.button_cancel);
+        linkBut = (Button) findViewById(R.id.buttonLink);
 
 
         String idd = getIntent().getStringExtra("id");
         id = Integer.parseInt(idd);
         id -= 1;
-//        id = id - 1;
-//        id = Integer.parseInt(idd);
 
         float timeText = AlbumListFragment.duration.get(id);
-//                getIntent().getStringExtra("Duration");
 
         double time = Double.valueOf(timeText);
         double t = time*3600;
@@ -85,14 +86,27 @@ public class EditActivity extends AppCompatActivity {
         title.setText(AlbumListFragment.titles.get(id));
         artist.setText(AlbumListFragment.artists.get(id));
         duration.setText(h + ":"+ btw + m + ":" + btw2 + s);
+        count.setText(String.valueOf(AlbumListFragment.counts.get(id)));
+        link.setText(AlbumListFragment.links.get(id));
+        lName.setText(AlbumListFragment.linkNames.get(id));
         year.setText(String.valueOf(AlbumListFragment.year.get(id)));
         react.setText(AlbumListFragment.Reacts.get(id));
         liked.setRating(AlbumListFragment.r1.get(id));
         tr_recn.setRating(AlbumListFragment.r2.get(id));
         your.setRating(AlbumListFragment.r3.get(id));
+        linkBut.setText(AlbumListFragment.linkNames.get(id));
         boolean ep = (AlbumListFragment.IsEP.get(id) == 1);
         EP.setChecked(ep);
 
+        linkBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url = AlbumListFragment.links.get(id);
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
 
         Bitmap bitmap = AlbumListFragment.images.get(id);
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
@@ -125,9 +139,10 @@ public class EditActivity extends AppCompatActivity {
                         (Float.valueOf(timeTexts[2]) / 3600);
                 db.UpdateData(String.valueOf(id+1), title.getText().toString(),
                         artist.getText().toString(), react.getText().toString(),
-                        isep, Integer.parseInt(
-                        year.getText().toString()), time,
-                        liked.getRating(), tr_recn.getRating(), your.getRating(), imgByte);
+                        isep, Integer.parseInt(year.getText().toString()), time,
+                        Integer.parseInt(count.getText().toString()), link.getText().toString(),
+                        lName.getText().toString(), liked.getRating(), tr_recn.getRating(),
+                        your.getRating(), imgByte);
 
                 Intent intent = new Intent(EditActivity.this, MainActivity.class);
                 finish();

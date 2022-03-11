@@ -150,7 +150,7 @@
         android:id="@+id/edit_text_year_edit"
         android:layout_width="55dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="35dp"
         android:ems="10"
         android:hint="Year"
@@ -161,14 +161,27 @@
 
     <EditText
         android:id="@+id/react_edit"
-        android:layout_width="120dp"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="35dp"
         android:ems="10"
         android:hint="Reacton"
         android:inputType="textPersonName"
         app:layout_constraintStart_toEndOf="@+id/edit_text_year_edit"
+        app:layout_constraintTop_toBottomOf="@+id/artist_edittext_edit"
+        tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/track_count_edittext_edit"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:hint="Count"
+        android:inputType="number"
+        app:layout_constraintStart_toEndOf="@+id/react_edit"
         app:layout_constraintTop_toBottomOf="@+id/artist_edittext_edit"
         tools:ignore="MissingConstraints" />
 
@@ -179,7 +192,44 @@
         android:layout_marginStart="11dp"
         android:layout_marginTop="39dp"
         android:text="EP"
-        app:layout_constraintStart_toEndOf="@+id/react_edit"
+        app:layout_constraintStart_toEndOf="@+id/track_count_edittext_edit"
         app:layout_constraintTop_toBottomOf="@+id/artist_edittext_edit" />
+
+    <EditText
+        android:id="@+id/link_edittext_edit"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:hint="link"
+        android:inputType="text"
+        android:minHeight="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3_edit" />
+
+    <EditText
+        android:id="@+id/link_name_edittext_edit"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:hint="link name"
+        android:inputType="text"
+        android:minHeight="48dp"
+        app:layout_constraintStart_toEndOf="@+id/link_edittext_edit"
+        app:layout_constraintTop_toBottomOf="@+id/textView3_edit" />
+
+    <Button
+        android:id="@+id/buttonLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
+        android:text="Spotify"
+        app:layout_constraintStart_toEndOf="@+id/link_name_edittext_edit"
+        app:layout_constraintTop_toBottomOf="@+id/textView3_edit" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

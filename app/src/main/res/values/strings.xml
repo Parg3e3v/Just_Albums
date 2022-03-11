@@ -98,5 +98,6 @@
         <item>rating</item>
         <item>duration</item>
         <item>year</item>
+        <item>track count</item>
     </string-array>
 </resources>

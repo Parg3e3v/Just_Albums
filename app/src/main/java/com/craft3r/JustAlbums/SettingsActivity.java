@@ -1,24 +1,28 @@
-package com.example.albumation;
+package com.craft3r.JustAlbums;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import android.Manifest;
+import android.app.UiModeManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -28,7 +32,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -37,7 +40,28 @@ public class SettingsActivity extends AppCompatActivity {
     public String path = "/data/data/com.example.albumation/databases";
     private static final int MY_PERMISSION_REQUEST_STORAGE = 1;
     ImageButton arrow;
-    LinearLayout import_export, delete_db;
+    LinearLayout import_export, delete_db, dark_mode;
+    String selectedTheme = "Light";
+    public  static final String SHARED_PREFS = "sharedPrefs";
+
+
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
+//    public static void setNightMode(Context target , int state){
+//        UiModeManager uiManager = (UiModeManager) target.getSystemService(Context.UI_MODE_SERVICE);
+//
+//        if (Build.VERSION.SDK_INT <= 22)
+//            uiManager.enableCarMode(0);
+//
+//        if (state==1)
+//            uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
+//        else if (state==2)
+//            uiManager.setNightMode(UiModeManager.MODE_NIGHT_NO);
+//        else
+//            uiManager.setNightMode(UiModeManager.MODE_NIGHT_AUTO);
+//    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,14 +69,67 @@ public class SettingsActivity extends AppCompatActivity {
         arrow = (ImageButton) findViewById(R.id.fromStToMain);
         import_export = (LinearLayout) findViewById(R.id.import_export);
         delete_db = (LinearLayout) findViewById(R.id.delete_db);
+        dark_mode = (LinearLayout) findViewById(R.id.night_mode_switch_layout);
 
+        sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        editor = sharedPreferences.edit();
+//        if (!sharedPreferences.contains("str"))
+//            editor.putString("str", "System Default").apply();
 
+        selectedTheme = sharedPreferences.getString("str", "Light");
+        // NIGHT MODE
+        //-----------------------------------------------------------------------------------------
+
+        dark_mode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+                String[] txt = {"Light", "Dark", "System Default"};
+
+                int checked = selectedTheme == "Light" ? 0 : selectedTheme == "Dark" ? 1 : 2;
+
+                builder.setSingleChoiceItems(txt, checked, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        switch (txt[i]){
+                            case "Light":
+                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                                break;
+                            case "Dark":
+                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                                break;
+                            case "System Default":
+                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                                break;
+                        }
+                        selectedTheme = txt[i];
+                        editor.putString("str", selectedTheme);
+                        editor.apply();
+
+                    }
+                }
+                )
+                        .setCancelable(true)
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.setTitle("Set dark mode");
+                alertDialog.show();
+//                Toast.makeText(getApplicationContext(), "Not working yet :3", Toast.LENGTH_LONG).show();
+            }
+        });
 
         // IMPORT / EXPORT
         //-----------------------------------------------------------------------------------------
         import_export.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "Export not working yet :3", Toast.LENGTH_LONG).show();
                 AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
                 String[] txt = {"Import", "Export"};
                 builder.setItems(txt, new DialogInterface.OnClickListener() {
@@ -159,6 +236,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case MY_PERMISSION_REQUEST_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

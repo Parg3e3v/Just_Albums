@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.albumation">
+    package="com.craft3r.JustAlbums">
 
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -18,17 +18,17 @@
         android:theme="@style/Theme.Albumation">
 
         <activity
-            android:name=".SettingsActivity"
+            android:name="com.craft3r.JustAlbums.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".EditActivity"
+            android:name="com.craft3r.JustAlbums.EditActivity"
             android:exported="false" />
         <activity
-            android:name=".AddActivity"
+            android:name="com.craft3r.JustAlbums.AddActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName="com.craft3r.JustAlbums.MainActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.craft3r.JustAlbums.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

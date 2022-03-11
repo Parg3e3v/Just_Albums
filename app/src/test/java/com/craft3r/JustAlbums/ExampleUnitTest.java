@@ -1,4 +1,4 @@
-package com.example.albumation;
+package com.craft3r.JustAlbums;
 
 import org.junit.Test;
 

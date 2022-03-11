@@ -1,38 +1,31 @@
-package com.example.albumation;
+package com.craft3r.JustAlbums;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NavUtils;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class AddActivity extends AppCompatActivity {
 
-    public EditText titleInput,artistInput, Duratio, Year, React;
+    public EditText titleInput,artistInput, Duratio, Year, React, link, linkName, count;
     public RatingBar Liked,Recogn,Your;
     public Button button;
     public ImageButton imgSelect;
@@ -53,6 +46,9 @@ public class AddActivity extends AppCompatActivity {
         titleInput = (EditText) findViewById(R.id.title_edittext);
         artistInput = (EditText) findViewById(R.id.artist_edittext);
         Duratio = (EditText) findViewById(R.id.editTextTime);
+        linkName = (EditText) findViewById(R.id.link_text_edittext);
+        link = (EditText) findViewById(R.id.link_edittext);
+        count = (EditText) findViewById(R.id.track_count_edittext);
         Year = (EditText) findViewById(R.id.edit_text_year);
         Liked = (RatingBar) findViewById(R.id.liked_ratingBar);
         Recogn = (RatingBar) findViewById(R.id.tr_recogn_ratingBar);
@@ -80,7 +76,8 @@ public class AddActivity extends AppCompatActivity {
                         db.AddAlbum(titleInput.getText().toString(), artistInput.getText().toString(),
                                 React.getText().toString(), IsEP,
                                 Integer.valueOf(Year.getText().toString()),
-                                time,
+                                time, Integer.parseInt(count.getText().toString()),
+                                link.getText().toString(), linkName.getText().toString(),
                                 Liked.getRating(), Recogn.getRating(), Your.getRating(), img);
 
                         Intent intent = new Intent(AddActivity.this, MainActivity.class);
