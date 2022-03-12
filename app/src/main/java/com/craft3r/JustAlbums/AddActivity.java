@@ -81,7 +81,7 @@ public class AddActivity extends AppCompatActivity {
                                 Liked.getRating(), Recogn.getRating(), Your.getRating(), img);
 
                         Intent intent = new Intent(AddActivity.this, MainActivity.class);
-                        AddActivity.this.finish();
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }else{
                         Toast.makeText(getApplicationContext(), "Failed to add album", Toast.LENGTH_LONG).show();
@@ -109,7 +109,7 @@ public class AddActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(AddActivity.this, MainActivity.class);
-        AddActivity.this.finish();
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 

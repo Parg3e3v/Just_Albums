@@ -17,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -101,10 +102,14 @@ public class EditActivity extends AppCompatActivity {
         linkBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String url = AlbumListFragment.links.get(id);
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
+                try {
+                    String url = AlbumListFragment.links.get(id);
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
+                }catch (Exception e){
+                    Toast.makeText(getApplicationContext(), "Link not found", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -145,7 +150,7 @@ public class EditActivity extends AppCompatActivity {
                         your.getRating(), imgByte);
 
                 Intent intent = new Intent(EditActivity.this, MainActivity.class);
-                finish();
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
         });
@@ -154,7 +159,7 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(EditActivity.this, MainActivity.class);
-                finish();
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
         });
@@ -163,7 +168,7 @@ public class EditActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(EditActivity.this, MainActivity.class);
-        finish();
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 

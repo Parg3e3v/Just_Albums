@@ -7,11 +7,14 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -26,6 +29,7 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Locale;
 
 public class AlbumListFragment extends Fragment {
     View view;
@@ -36,6 +40,7 @@ public class AlbumListFragment extends Fragment {
 
     public LinearLayout lay;
     public ImageButton roller, stBut;
+    public EditText search;
     boolean IsDown = true;
     public NestedScrollView contCont;
     public TextView first;
@@ -77,6 +82,9 @@ public class AlbumListFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         view =  inflater.inflate(R.layout.fragment_album_list, container, false);
         lay = view.findViewById(R.id.cont);
+
+        search = (EditText) view.findViewById(R.id.search);
+
         first = (TextView) view.findViewById(R.id.first);
         contCont = (NestedScrollView) view.findViewById(R.id.contCont);
         deb = (Spinner) view.findViewById(R.id.spinner);
@@ -138,10 +146,65 @@ public class AlbumListFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), SettingsActivity.class);
-                getActivity().finish();
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
         });
+
+        search.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int a, int i1, int i2) {
+                lay.removeAllViews();
+                if (search.getText().toString() == ""){
+                    for (int i = 0; i < Albums.size(); i++) {
+                        lay.addView(Albums.get(i).linearLayout);
+                        Albums.get(i).id.setText(String.valueOf(i + 1));
+                    }
+                }
+                else {
+                    ArrayList<AlbumTupple> newTupList = new ArrayList<AlbumTupple>();
+                    for (int i = 0; i < Albums.size(); i++) {
+                        if (Albums.get(i).title.toLowerCase(Locale.ROOT).contains(search.getText().toString().toLowerCase(Locale.ROOT)))
+                            newTupList.add(Albums.get(i));
+                        if (Albums.get(i).artist.toLowerCase(Locale.ROOT).contains(search.getText().toString().toLowerCase(Locale.ROOT)))
+                            newTupList.add(Albums.get(i));
+                    }
+
+                    Collections.sort(newTupList, new Comparator<AlbumTupple>() {
+                        @Override
+                        public int compare(AlbumTupple albumTupple, AlbumTupple t1) {
+                            if (albumTupple.pos_as_default > t1.pos_as_default)
+                                return 1;
+                            else if (albumTupple.pos_as_default < t1.pos_as_default)
+                                return -1;
+                            else
+                                return 0;
+                        }
+                    });
+
+                    for (int i = 0; i < newTupList.size(); i++) {
+                        try {
+                            lay.addView(newTupList.get(i).linearLayout);
+                            newTupList.get(i).id.setText(String.valueOf(i + 1));
+                        }catch (Exception e){
+
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
 
         UpdateViewContent();
 
@@ -217,7 +280,7 @@ public class AlbumListFragment extends Fragment {
                     public void onClick(View view) {
                         Intent intent = new Intent(view.getContext(), EditActivity.class);
                         intent.putExtra("id", String.valueOf(alb.id));
-                        getActivity().finish();
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
                 });

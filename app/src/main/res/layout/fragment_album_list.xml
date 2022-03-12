@@ -44,24 +44,38 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary">
+            android:background="@color/colorPrimary"
+            android:orientation="horizontal">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:fontFamily="sans-serif-light"
-                android:text="All Albums"
-                android:textColor="@color/textColor"
-                android:textSize="18dp" />
+                android:layout_height="match_parent"
+                android:background="@drawable/ic_rounded_background"
+                android:orientation="horizontal">
 
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:src="?android:attr/actionModeWebSearchDrawable" />
+
+                <EditText
+                    android:id="@+id/search"
+                    android:layout_width="115dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:inputType="textPersonName"
+                    android:hint="Search" />
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center_vertical"
-                android:paddingLeft="50dp"
+                android:paddingLeft="10dp"
                 android:fontFamily="sans-serif-light"
                 android:text="Sort by"
                 android:textColor="@color/textColor"

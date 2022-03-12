@@ -41,26 +41,16 @@ public class SettingsActivity extends AppCompatActivity {
     private static final int MY_PERMISSION_REQUEST_STORAGE = 1;
     ImageButton arrow;
     LinearLayout import_export, delete_db, dark_mode;
-    String selectedTheme = "Light";
-    public  static final String SHARED_PREFS = "sharedPrefs";
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static final String TEXT = "text";
 
+    public void saveData(String txt){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(TEXT, txt);
+        editor.apply();
+    }
 
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
-
-//    public static void setNightMode(Context target , int state){
-//        UiModeManager uiManager = (UiModeManager) target.getSystemService(Context.UI_MODE_SERVICE);
-//
-//        if (Build.VERSION.SDK_INT <= 22)
-//            uiManager.enableCarMode(0);
-//
-//        if (state==1)
-//            uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
-//        else if (state==2)
-//            uiManager.setNightMode(UiModeManager.MODE_NIGHT_NO);
-//        else
-//            uiManager.setNightMode(UiModeManager.MODE_NIGHT_AUTO);
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,13 +61,6 @@ public class SettingsActivity extends AppCompatActivity {
         delete_db = (LinearLayout) findViewById(R.id.delete_db);
         dark_mode = (LinearLayout) findViewById(R.id.night_mode_switch_layout);
 
-        sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(this);
-        editor = sharedPreferences.edit();
-//        if (!sharedPreferences.contains("str"))
-//            editor.putString("str", "System Default").apply();
-
-        selectedTheme = sharedPreferences.getString("str", "Light");
         // NIGHT MODE
         //-----------------------------------------------------------------------------------------
 
@@ -87,25 +70,29 @@ public class SettingsActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
                 String[] txt = {"Light", "Dark", "System Default"};
 
-                int checked = selectedTheme == "Light" ? 0 : selectedTheme == "Dark" ? 1 : 2;
-
-                builder.setSingleChoiceItems(txt, checked, new DialogInterface.OnClickListener() {
+                builder.setSingleChoiceItems(txt, MainActivity.Mode, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        String temp = "System Default";
                         switch (txt[i]){
                             case "Light":
                                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                                temp = txt[i];
+                                MainActivity.Mode = 0;
                                 break;
                             case "Dark":
                                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                                MainActivity.Mode = 1;
+                                temp = txt[i];
                                 break;
                             case "System Default":
                                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                                MainActivity.Mode = 2;
+                                temp = txt[i];
                                 break;
                         }
-                        selectedTheme = txt[i];
-                        editor.putString("str", selectedTheme);
-                        editor.apply();
+                        System.out.println(temp + "-------AA");
+                        saveData(temp);
 
                     }
                 }
@@ -219,7 +206,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-                SettingsActivity.this.finish();
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
         });
@@ -228,7 +215,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-        SettingsActivity.this.finish();
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
