@@ -49,6 +49,7 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
+                android:layout_marginStart="10dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/ic_rounded_background"
                 android:orientation="horizontal">
@@ -62,7 +63,7 @@
 
                 <EditText
                     android:id="@+id/search"
-                    android:layout_width="115dp"
+                    android:layout_width="110dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0"
                     android:inputType="textPersonName"
@@ -165,13 +166,17 @@
                             android:layout_weight="1"
                             android:orientation="vertical">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="10dp"
-                                android:layout_weight="0"
-                                android:text="Name"
-                                android:textSize="16dp" />
+                            <HorizontalScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_weight="0"
+                                    android:text="Name"
+                                    android:textSize="16dp" />
+                            </HorizontalScrollView>
 
                             <LinearLayout
                                 android:layout_width="match_parent"

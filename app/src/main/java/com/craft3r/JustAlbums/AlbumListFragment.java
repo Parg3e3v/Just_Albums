@@ -1,11 +1,15 @@
 package com.craft3r.JustAlbums;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,18 +17,24 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +45,9 @@ public class AlbumListFragment extends Fragment {
     View view;
 
     int rollerDrUp, rollerDrDown;
+    public static final String SHARED_PREF = "sharedforsort";
+    public static final String TEXT_SORT = "sort_method";
+    public static final String BOOL_SORT = "IsDown";
 
     public static final int tempid = 9999;
 
@@ -42,7 +55,8 @@ public class AlbumListFragment extends Fragment {
     public ImageButton roller, stBut;
     public EditText search;
     boolean IsDown = true;
-    public NestedScrollView contCont;
+    public static NestedScrollView contCont;
+    public FloatingActionButton to_top_but;
     public TextView first;
     ArrayList<AlbumTupple> Albums;
     public DBHelper db;
@@ -51,7 +65,8 @@ public class AlbumListFragment extends Fragment {
     public static ArrayList<Bitmap> images;
     public static ArrayList<Float> r1, r2, r3, duration;
     public static ArrayList<Integer> year, IsEP, counts;
-
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     public Spinner deb;
 
     public class AlbumTupple<linearLayout, pos_as_default, title, artist, rating, duration, year> {
@@ -76,6 +91,18 @@ public class AlbumListFragment extends Fragment {
         }
     }
 
+    public void ChangeRoller(){
+        contCont.fullScroll(ScrollView.FOCUS_UP);
+        roller.setBackgroundResource(IsDown ? rollerDrDown: rollerDrUp);
+        lay.removeAllViews();
+        Collections.reverse(Albums);
+        for (int i = 0 ; i < Albums.size(); i++) {
+            lay.addView(Albums.get(i).linearLayout);
+            Albums.get(i).id.setText(String.valueOf(i+1));
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
@@ -106,8 +133,30 @@ public class AlbumListFragment extends Fragment {
         roller = (ImageButton) view.findViewById(R.id.roller);
         stBut = (ImageButton) view.findViewById(R.id.settings);
 
+
+        contCont.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                if (contCont.getScrollY() > 10) {
+                    MainActivity.to_top_but.setVisibility(View.VISIBLE);
+                }else {
+                    MainActivity.to_top_but.setVisibility(View.GONE);
+
+                }
+
+            }
+        });
+
         Albums = new ArrayList<AlbumTupple>();
 
+
+        // SHARED PREFS -----------------------------------------------------------------
+        sharedPreferences = getActivity().getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        deb.setSelection(sharedPreferences.getInt(TEXT_SORT, 0));
+        IsDown = sharedPreferences.getBoolean(BOOL_SORT, true);
+
+        //-------------------------------------------------------------------------------
 
         // -------------------------------------------------------------------------
         int nightModeFlags =
@@ -127,18 +176,16 @@ public class AlbumListFragment extends Fragment {
                 break;
         }
         roller.setBackgroundResource(IsDown ? rollerDrDown: rollerDrUp);
+
+        ChangeRoller();
         // ------------------------------------------------------------------------
         roller.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 IsDown = !IsDown;
-                roller.setBackgroundResource(IsDown ? rollerDrDown: rollerDrUp);
-                lay.removeAllViews();
-                Collections.reverse(Albums);
-                for (int i = 0 ; i < Albums.size(); i++) {
-                    lay.addView(Albums.get(i).linearLayout);
-                    Albums.get(i).id.setText(String.valueOf(i+1));
-                }
+                ChangeRoller();
+                editor.putBoolean(BOOL_SORT, IsDown);
+                editor.apply();
             }
         });
 
@@ -161,10 +208,10 @@ public class AlbumListFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int a, int i1, int i2) {
                 lay.removeAllViews();
-                if (search.getText().toString() == ""){
+                if (search.getText().toString().matches("")){
                     for (int i = 0; i < Albums.size(); i++) {
                         lay.addView(Albums.get(i).linearLayout);
-                        Albums.get(i).id.setText(String.valueOf(i + 1));
+                        Albums.get(i).id.setText(String.valueOf(i+1));
                     }
                 }
                 else {
@@ -293,6 +340,8 @@ public class AlbumListFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String temp = parent.getItemAtPosition(position).toString();
                 lay.removeAllViews();
+
+
                 switch (temp){
                     case "time added":
                         Collections.sort(Albums, new Comparator<AlbumTupple>() {
@@ -388,6 +437,12 @@ public class AlbumListFragment extends Fragment {
                     default:
 
                     }
+
+                // Roller fix
+                if (!IsDown){ Collections.reverse(Albums); }
+
+                editor.putInt(TEXT_SORT, position);
+                editor.apply();
 
                 for (int i = 0 ; i < Albums.size(); i++) {
                     lay.addView(Albums.get(i).linearLayout);

@@ -10,12 +10,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ScrollView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
 
-    public FloatingActionButton fl_but;
+    public static FloatingActionButton fl_but, to_top_but;
     public static int Mode = 0;
 
     @Override
@@ -24,6 +25,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fl_but = findViewById(R.id.fl_button);
+        to_top_but = findViewById(R.id.to_top_button);
+
+        to_top_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlbumListFragment.contCont.fullScroll(ScrollView.FOCUS_UP);
+            }
+        });
 
         SharedPreferences sharedPreferences = getSharedPreferences(SettingsActivity.SHARED_PREFS, MODE_PRIVATE);
         switch (sharedPreferences.getString(SettingsActivity.TEXT, "System Default")){

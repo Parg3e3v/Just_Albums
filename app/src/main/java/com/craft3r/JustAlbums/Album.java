@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -109,7 +110,7 @@ public class Album {
         TextView EP = new TextView(ct);
         if(IsEp == 1)
             EP.setText("EP");
-//        EP.setText(react);
+
         EP.setTextColor(Color.RED);
 
         LinearLayout.LayoutParams EPP =  new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -125,28 +126,18 @@ public class Album {
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         nameP.weight = 0;
 
-        nameT.setMaxLines(1);
-        nameP.setMargins(AlbumListFragment.dp(ct,5), 0, 0, 0);
+        HorizontalScrollView horizScr = new HorizontalScrollView(ct);
+        ViewGroup.MarginLayoutParams horParam = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        horParam.setMarginStart(AlbumListFragment.dp(ct, 5));
+        horizScr.setScrollBarSize(AlbumListFragment.dp(ct, 1));
+        horizScr.setLayoutParams(horParam);
+
         nameT.setLayoutParams(nameP);
         nameT.setText(name);
-        nameT.setMaxWidth(AlbumListFragment.dp(ct,210));
         nameT.setTextSize(16);
 
-        TextView dt = new TextView(ct);
-        LinearLayout.LayoutParams dot = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        dot.weight = 0;
-
-        dt.setMaxLines(1);
-        dt.setLayoutParams(dot);
-        dt.setTextSize(16);
-        nameT.measure(0, 0);
-        if (nameT.getMeasuredWidth() >= 551) {
-            dt.setText("...");
-        }
-        l.addView(nameT);
-        l.addView(dt);
+        horizScr.addView(nameT);
+        l.addView(horizScr);
         l.addView(EP);
 
         info.addView(l);
@@ -154,28 +145,25 @@ public class Album {
 
         // Description
         // ----------------------------------------------------------------------------------------
-//        LinearLayout descLay = new LinearLayout(ct);
-//        LinearLayout.LayoutParams dsc = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-//                LinearLayout.LayoutParams.MATCH_PARENT);
-//        dsc.weight = 1;
-//        descLay.setOrientation(LinearLayout.HORIZONTAL);
-//        descLay.setLayoutParams(dsc);
-//
-//
 
         TextView desc = new TextView(ct);
 
         LinearLayout.LayoutParams descP =  new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         descP.weight = 0;
-        descP.setMargins(AlbumListFragment.dp(ct,10), 0, 0, 0);
         desc.setLayoutParams(descP);
         desc.setText(artist);
         desc.setTextSize(12);
 
-//        descLay.addView(desc);
+        HorizontalScrollView horizScr2 = new HorizontalScrollView(ct);
+        ViewGroup.MarginLayoutParams horParam2 = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        horParam2.setMarginStart(AlbumListFragment.dp(ct, 10));
+        horizScr2.setScrollBarSize(AlbumListFragment.dp(ct, 1));
+        horizScr2.setLayoutParams(horParam2);
 
-        info.addView(desc);
+        horizScr2.addView(desc);
+
+        info.addView(horizScr2);
         // ----------------------------------------------------------------------------------------
 
         // RatingBar

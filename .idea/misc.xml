@@ -6,6 +6,8 @@
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/drawable-night/ic_new_ratingbar.xml" value="0.1665" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.189" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/drawable/customborder.xml" value="0.1895" />
+        <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/drawable/ic_add.xml" value="0.2175" />
+        <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/drawable/ic_arrow_up.xml" value="0.2175" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.1665" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/drawable/ic_baseline_arrow_back_24_black.xml" value="0.1665" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/drawable/ic_down.xml" value="0.211" />
@@ -16,10 +18,13 @@
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/drawable/settings.xml" value="0.211" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/layout/activity_add.xml" value="0.34288537549407117" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/layout/activity_edit.xml" value="0.25" />
-        <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/layout/activity_main.xml" value="0.4466666666666667" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/layout/activity_settings.xml" value="0.352392065344224" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/layout/fragment_album_list.xml" value="0.3333333333333333" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/layout/fragment_album_top.xml" value="0.18125" />
+        <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/mipmap-anydpi-v26/JustAlbumsIcon.xml" value="0.2175" />
+        <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/mipmap-anydpi-v26/JustAlbumsIcon_round.xml" value="0.189" />
+        <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2175" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/mipmap-anydpi-v26/icon.xml" value="0.189" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/mipmap-anydpi-v26/icon_round.xml" value="0.2005" />
         <entry key="..\:/1TB/D/AndroidStudioProjects/Albumation/app/src/main/res/xml/filepaths.xml" value="0.15729166666666666" />
