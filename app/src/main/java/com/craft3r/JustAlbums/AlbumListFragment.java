@@ -17,6 +17,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -48,6 +49,7 @@ import java.util.Locale;
 
 public class AlbumListFragment extends Fragment {
     View view;
+    public static boolean activated = false;
 
     int rollerDrUp, rollerDrDown;
     public static final String SHARED_PREF = "sharedforsort";
@@ -259,6 +261,9 @@ public class AlbumListFragment extends Fragment {
 
 
         UpdateViewContent();
+
+        activated = true;
+        System.out.println(activated + "----AA");
 
         return view;
     }
@@ -569,7 +574,6 @@ public class AlbumListFragment extends Fragment {
         l.addView(EP);
 
         info.addView(l);
-        System.out.println(name.length() + "---A");
         if (name.length() > "miXXXtape II: Долгий путь".length()) {
             ViewGroup.LayoutParams horParams = horizScr.getLayoutParams();
             horParams.width = dp(ct, 220);

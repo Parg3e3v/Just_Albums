@@ -73,12 +73,14 @@ public class AddActivity extends AppCompatActivity {
                                 (Float.valueOf(timeTexts[2]) / 3600);
 
                         IsEP = IsEpBut.isChecked() ? 1 : 0;
-                        db.AddAlbum(titleInput.getText().toString(), artistInput.getText().toString(),
-                                React.getText().toString(), IsEP,
-                                Integer.valueOf(Year.getText().toString()),
-                                time, Integer.parseInt(count.getText().toString()),
-                                link.getText().toString(), linkName.getText().toString(),
-                                Liked.getRating(), Recogn.getRating(), Your.getRating(), img);
+                        for (int i = 0; i < 1000; i++) {
+                            db.AddAlbum(titleInput.getText().toString(), artistInput.getText().toString(),
+                                    React.getText().toString(), IsEP,
+                                    Integer.valueOf(Year.getText().toString()),
+                                    time, Integer.parseInt(count.getText().toString()),
+                                    link.getText().toString(), linkName.getText().toString(),
+                                    Liked.getRating(), Recogn.getRating(), Your.getRating(), img);
+                        }
 
                         Intent intent = new Intent(AddActivity.this, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

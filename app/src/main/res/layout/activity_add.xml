@@ -202,7 +202,7 @@
             android:layout_marginTop="16dp"
             android:ems="10"
             android:hint="Link name"
-            android:inputType="time"
+            android:inputType="text"
             android:minHeight="48dp"
             android:text="Spotify"
             app:layout_constraintStart_toEndOf="@+id/track_count_edittext"

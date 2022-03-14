@@ -4,33 +4,31 @@
     package="com.craft3r.JustAlbums">
 
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-
     <application
-
         android:allowBackup="true"
-        android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_just_icon"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_just_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Albumation">
-
         <activity
-            android:name="com.craft3r.JustAlbums.SettingsActivity"
+            android:name=".SettingsActivity"
             android:exported="false" />
         <activity
-            android:name="com.craft3r.JustAlbums.EditActivity"
+            android:name=".EditActivity"
             android:exported="false" />
         <activity
-            android:name="com.craft3r.JustAlbums.AddActivity"
+            android:name=".AddActivity"
             android:exported="false"
-            android:parentActivityName="com.craft3r.JustAlbums.MainActivity" />
+            android:parentActivityName=".MainActivity" />
         <activity
-            android:name="com.craft3r.JustAlbums.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,6 +37,7 @@
             </intent-filter>
 
         </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.url.myapp.fileprovider"
