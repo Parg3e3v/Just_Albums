@@ -48,6 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
     LinearLayout import_export, delete_db, dark_mode;
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String TEXT = "text";
+    public boolean NEED_TO_BE_UPDATED;
 
     public void saveData(String txt){
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -64,7 +65,7 @@ public class SettingsActivity extends AppCompatActivity {
         import_export = (LinearLayout) findViewById(R.id.import_export);
         delete_db = (LinearLayout) findViewById(R.id.delete_db);
         dark_mode = (LinearLayout) findViewById(R.id.night_mode_switch_layout);
-
+        NEED_TO_BE_UPDATED = false;
         // NIGHT MODE
         //-----------------------------------------------------------------------------------------
 
@@ -180,8 +181,8 @@ public class SettingsActivity extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                NEED_TO_BE_UPDATED = true;
                                 try {
-                                    // delete the original file
                                     new File(path + "/JustAlbums.db").delete();
                                 }
                                 catch (Exception e) {
@@ -205,23 +206,20 @@ public class SettingsActivity extends AppCompatActivity {
         //-----------------------------------------------------------------------------------------
 
 
+
         // BACK ARROW
         //-----------------------------------------------------------------------------------------
         arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                GoToMain();
             }
         });
     }
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        GoToMain();
     }
 
 
@@ -233,7 +231,7 @@ public class SettingsActivity extends AppCompatActivity {
             if(copyFile(selectedfile, Uri.parse(path), true)) {
                 Toast.makeText(getApplicationContext(), "Imported successfully",
                         Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                Intent intent = new Intent(SettingsActivity.this, LoadingActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }else
@@ -248,7 +246,6 @@ public class SettingsActivity extends AppCompatActivity {
     private boolean copyFile(Uri uri, Uri outputPath, boolean Delete) {
         if (Delete) {
             try {
-                // delete the original file
                 new File(outputPath + "/JustAlbums.db").delete();
             } catch (Exception e) {
                 Log.e("tag", e.getMessage());
@@ -277,8 +274,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
             in.close();
             in = null;
-
-            // write the output file (You have now copied the file)
             out.flush();
             out.close();
             out = null;
@@ -298,5 +293,11 @@ public class SettingsActivity extends AppCompatActivity {
             return false;
         }
 
+    }
+    public void GoToMain() {
+        Intent intent = new Intent(SettingsActivity.this,
+                                NEED_TO_BE_UPDATED ? LoadingActivity.class : MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }

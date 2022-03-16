@@ -2,22 +2,30 @@ package com.craft3r.JustAlbums;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import static com.craft3r.JustAlbums.LoadingActivity.IsEP;
+import static com.craft3r.JustAlbums.LoadingActivity.artists;
+import static com.craft3r.JustAlbums.LoadingActivity.ids;
+import static com.craft3r.JustAlbums.LoadingActivity.titles;
+import static com.craft3r.JustAlbums.LoadingActivity.images;
+import static com.craft3r.JustAlbums.LoadingActivity.year;
+import static com.craft3r.JustAlbums.LoadingActivity.duration;
+import static com.craft3r.JustAlbums.LoadingActivity.counts;
+import static com.craft3r.JustAlbums.LoadingActivity.r1;
+import static com.craft3r.JustAlbums.LoadingActivity.r2;
+import static com.craft3r.JustAlbums.LoadingActivity.r3;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -31,10 +39,8 @@ import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
@@ -66,12 +72,6 @@ public class AlbumListFragment extends Fragment {
     public FloatingActionButton to_top_but;
     public TextView first;
     ArrayList<AlbumTupple> Albums;
-    public DBHelper db;
-    public static ArrayList<String> ids;
-    public static ArrayList<String> titles, artists, Reacts, links, linkNames;
-    public static ArrayList<Bitmap> images;
-    public static ArrayList<Float> r1, r2, r3, duration;
-    public static ArrayList<Integer> year, IsEP, counts;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     public Spinner deb;
@@ -122,21 +122,7 @@ public class AlbumListFragment extends Fragment {
         first = (TextView) view.findViewById(R.id.first);
         contCont = (NestedScrollView) view.findViewById(R.id.contCont);
         deb = (Spinner) view.findViewById(R.id.spinner);
-        db = new DBHelper(view.getContext());
-        ids = new ArrayList<String>();
-        titles = new ArrayList<String>();
-        artists = new ArrayList<String>();
-        Reacts = new ArrayList<String>();
-        links = new ArrayList<String>();
-        linkNames = new ArrayList<String>();
-        IsEP = new ArrayList<Integer>();
-        images = new ArrayList<Bitmap>();
-        r1 = new ArrayList<Float>();
-        r2 = new ArrayList<Float>();
-        r3 = new ArrayList<Float>();
-        duration = new ArrayList<Float>();
-        year = new ArrayList<Integer>();
-        counts = new ArrayList<Integer>();
+
         roller = (ImageButton) view.findViewById(R.id.roller);
         stBut = (ImageButton) view.findViewById(R.id.settings);
 
@@ -189,6 +175,15 @@ public class AlbumListFragment extends Fragment {
         roller.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                Handler handler = new Handler();
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Intent inte = new Intent(getActivity(), LoadingActivity.class);
+//                        inte.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        startActivity(inte);
+//                    }
+//                }, 2000);
                 IsDown = !IsDown;
                 ChangeRoller();
                 editor.putBoolean(BOOL_SORT, IsDown);
@@ -274,32 +269,7 @@ public class AlbumListFragment extends Fragment {
     }
 
     public void UpdateViewContent() {
-        try {
-            Cursor cursor = db.readAllData();
-            while (cursor.moveToNext()) {
-                ids.add(cursor.getString(0));
-                titles.add(cursor.getString(1));
-                artists.add(cursor.getString(2));
-                year.add(cursor.getInt(3));
-                duration.add(cursor.getFloat(4));
-                counts.add(cursor.getInt(5));
-                links.add(cursor.getString(6));
-                linkNames.add(cursor.getString(7));
-                Reacts.add(cursor.getString(8));
-                IsEP.add(cursor.getInt(9));
-                Bitmap bmp = BitmapFactory.decodeByteArray(cursor.getBlob(10), 0,
-                        cursor.getBlob(10).length);
-                images.add(bmp);
-                r1.add(cursor.getFloat(11));
-                r2.add(cursor.getFloat(12));
-                r3.add(cursor.getFloat(13));
 
-            }
-        }catch (Exception e){
-            Log.e("tag", e.getMessage());
-            Toast.makeText(view.getContext(), "Can't load database", Toast.LENGTH_SHORT).show();
-            ids.removeAll(ids);
-        }
 
         lay.removeAllViews();
 
@@ -309,37 +279,37 @@ public class AlbumListFragment extends Fragment {
             first.setVisibility(View.GONE);
         }
 
-            for (int i = 0; i < ids.size(); i++) {
+        for (int i = 0; i < ids.size(); i++) {
 
-                int id = i + 1;
-                int tempid_ = tempid + i;
+            int id = i + 1;
+            int tempid_ = tempid + i;
 
-                LoadAlbum(id, titles.get(i), artists.get(i), IsEP.get(i), images.get(i),
-                        new float[]{r1.get(i), r2.get(i), r3.get(i)}, lay, view.getContext(), tempid_);
+            load(id, titles.get(i), artists.get(i), IsEP.get(i), images.get(i),
+                    new float[]{r1.get(i), r2.get(i), r3.get(i)}, lay, view.getContext(), tempid_);
 
-                LinearLayout example = view.findViewById(tempid_);
+            LinearLayout example = view.findViewById(tempid_);
 
-                float rating = (r1.get(i) + r2.get(i) + r3.get(i)) / 3;
+            float rating = (r1.get(i) + r2.get(i) + r3.get(i)) / 3;
 
-                AlbumTupple temp = new AlbumTupple(example, i, titles.get(i), artists.get(i), rating,
-                        duration.get(i), counts.get(i), year.get(i),
-                        (TextView) view.findViewById(tempid_ + tempid));
+            AlbumListFragment.AlbumTupple temp = new AlbumListFragment.AlbumTupple(example, i, titles.get(i), artists.get(i), rating,
+                    duration.get(i), counts.get(i), year.get(i),
+                    (TextView) view.findViewById(tempid_ + tempid));
 
-                Albums.add(temp);
+            Albums.add(temp);
 
-                initspinnerfooter();
+            initspinnerfooter();
 
 
-                example.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(view.getContext(), EditActivity.class);
-                        intent.putExtra("id", String.valueOf(id));
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                    }
-                });
-            }
+            example.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(view.getContext(), EditActivity.class);
+                    intent.putExtra("id", String.valueOf(id));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+            });
+        }
 
     }
     private void initspinnerfooter() {
@@ -466,18 +436,16 @@ public class AlbumListFragment extends Fragment {
     }
 
 
-
-
-    public static void LoadAlbum(int id,String name, String artist, int IsEp,
-                                 Bitmap img, float[] ratings, LinearLayout lay, Context ct,
-                                 int idL){
+    public static void load(int id, String name, String artist, int IsEp,
+                            Bitmap img, float[] ratings, LinearLayout lay, Context ct,
+                            int idL){
         // main container
         // ----------------------------------------------------------------------------------------
         LinearLayout example = new LinearLayout(ct);
         example.setId(idL);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(AlbumListFragment.dp(ct,10), 0, AlbumListFragment.dp(ct,10), AlbumListFragment.dp(ct,20));
+        params.setMargins(dp(ct,10), 0, dp(ct,10), dp(ct,20));
         example.setLayoutParams(params);
         example.setOrientation(LinearLayout.HORIZONTAL);
 
@@ -489,9 +457,9 @@ public class AlbumListFragment extends Fragment {
         TextView txt = new TextView(ct);
         txt.setId(idL + 9999);
 
-        LinearLayout.LayoutParams txtParams =  new LinearLayout.LayoutParams(AlbumListFragment.dp(ct,20), AlbumListFragment.dp(ct,20));
+        LinearLayout.LayoutParams txtParams =  new LinearLayout.LayoutParams(dp(ct,20), dp(ct,20));
         txtParams.gravity = Gravity.CENTER_VERTICAL;
-        txtParams.setMargins(0, 0, AlbumListFragment.dp(ct,5), 0);
+        txtParams.setMargins(0, 0, dp(ct,5), 0);
         txt.setLayoutParams(txtParams);
         txt.setGravity(Gravity.CENTER_VERTICAL);
         txt.setText(String.valueOf(id));
@@ -511,7 +479,7 @@ public class AlbumListFragment extends Fragment {
         // ----------------------------------------------------------------------------------------
         ImageView im = new ImageView(ct);
         im.setImageBitmap(img);
-        im.setLayoutParams(new ViewGroup.LayoutParams(AlbumListFragment.dp(ct,84),AlbumListFragment.dp(ct,84)));
+        im.setLayoutParams(new ViewGroup.LayoutParams(dp(ct,84),dp(ct,84)));
         Cont.addView(im);
         // ----------------------------------------------------------------------------------------
 
@@ -531,7 +499,7 @@ public class AlbumListFragment extends Fragment {
         LinearLayout l = new LinearLayout(ct);
         LinearLayout.LayoutParams lParam = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-        lParam.setMargins(AlbumListFragment.dp(ct,5), 0, 0, 0);
+        lParam.setMargins(dp(ct,5), 0, 0, 0);
         l.setLayoutParams(lParam);
 
         l.setOrientation(LinearLayout.HORIZONTAL);
@@ -548,7 +516,7 @@ public class AlbumListFragment extends Fragment {
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         EPP.gravity = Gravity.END;
         EPP.weight = 0;
-        EPP.setMargins(AlbumListFragment.dp(ct,5), 0, 0, 0);
+        EPP.setMargins(dp(ct,5), 0, 0, 0);
         EP.setLayoutParams(EPP);
         EP.setTextSize(16);
 
@@ -574,7 +542,7 @@ public class AlbumListFragment extends Fragment {
         l.addView(EP);
 
         info.addView(l);
-        if (name.length() > "miXXXtape II: Долгий путь".length()) {
+        if (name.length() > 25) {
             ViewGroup.LayoutParams horParams = horizScr.getLayoutParams();
             horParams.width = dp(ct, 220);
             horizScr.setLayoutParams(horParams);
@@ -625,4 +593,6 @@ public class AlbumListFragment extends Fragment {
         lay.addView(example);
 
     }
+
+
 }

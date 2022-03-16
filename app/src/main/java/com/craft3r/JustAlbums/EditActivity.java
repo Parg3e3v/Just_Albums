@@ -67,7 +67,7 @@ public class EditActivity extends AppCompatActivity {
         id = Integer.parseInt(idd);
         id -= 1;
 
-        float timeText = AlbumListFragment.duration.get(id);
+        float timeText = LoadingActivity.duration.get(id);
 
         double time = Double.valueOf(timeText);
         double t = time*3600;
@@ -84,26 +84,26 @@ public class EditActivity extends AppCompatActivity {
             btw2 = "0";
 
 
-        title.setText(AlbumListFragment.titles.get(id));
-        artist.setText(AlbumListFragment.artists.get(id));
+        title.setText(LoadingActivity.titles.get(id));
+        artist.setText(LoadingActivity.artists.get(id));
         duration.setText(h + ":"+ btw + m + ":" + btw2 + s);
-        count.setText(String.valueOf(AlbumListFragment.counts.get(id)));
-        link.setText(AlbumListFragment.links.get(id));
-        lName.setText(AlbumListFragment.linkNames.get(id));
-        year.setText(String.valueOf(AlbumListFragment.year.get(id)));
-        react.setText(AlbumListFragment.Reacts.get(id));
-        liked.setRating(AlbumListFragment.r1.get(id));
-        tr_recn.setRating(AlbumListFragment.r2.get(id));
-        your.setRating(AlbumListFragment.r3.get(id));
-        linkBut.setText(AlbumListFragment.linkNames.get(id));
-        boolean ep = (AlbumListFragment.IsEP.get(id) == 1);
+        count.setText(String.valueOf(LoadingActivity.counts.get(id)));
+        link.setText(LoadingActivity.links.get(id));
+        lName.setText(LoadingActivity.linkNames.get(id));
+        year.setText(String.valueOf(LoadingActivity.year.get(id)));
+        react.setText(LoadingActivity.Reacts.get(id));
+        liked.setRating(LoadingActivity.r1.get(id));
+        tr_recn.setRating(LoadingActivity.r2.get(id));
+        your.setRating(LoadingActivity.r3.get(id));
+        linkBut.setText(LoadingActivity.linkNames.get(id));
+        boolean ep = (LoadingActivity.IsEP.get(id) == 1);
         EP.setChecked(ep);
 
         linkBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
-                    String url = AlbumListFragment.links.get(id);
+                    String url = LoadingActivity.links.get(id);
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
                     startActivity(i);
@@ -113,7 +113,7 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
-        Bitmap bitmap = AlbumListFragment.images.get(id);
+        Bitmap bitmap = LoadingActivity.images.get(id);
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         int wh =  AlbumListFragment.dp(getApplicationContext(),320);
         Bitmap bitmapScaled = Bitmap.createScaledBitmap(bitmap, wh, wh, true);
@@ -149,7 +149,7 @@ public class EditActivity extends AppCompatActivity {
                         lName.getText().toString(), liked.getRating(), tr_recn.getRating(),
                         your.getRating(), imgByte);
 
-                Intent intent = new Intent(EditActivity.this, MainActivity.class);
+                Intent intent = new Intent(EditActivity.this, LoadingActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }

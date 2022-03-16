@@ -9,11 +9,8 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.ActionMode;
 import android.view.View;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -21,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
 
     public static FloatingActionButton fl_but, to_top_but;
     public static int Mode = 0;
-    LoadingDialog loadingDialog;
     @Override
     protected void onStop() {
         super.onStop();
@@ -34,10 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loadingDialog = new LoadingDialog(this);
 
-        loadingDialog.startLoadingDialog();
-        recourse();
         fl_but = findViewById(R.id.fl_button);
         to_top_but = findViewById(R.id.to_top_button);
 
@@ -79,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.frameLayout,new AlbumListFragment());
         fragmentTransaction.commit();
 
+
+
     }
 
     public void replaceFragment(Fragment fragment){
@@ -88,21 +83,6 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.replace(R.id.frameLayout,fragment);
         fragmentTransaction.commit();
-    }
-
-    void recourse(){
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (AlbumListFragment.activated){
-                    loadingDialog.dismissDialog();
-                }else{
-                    recourse();
-                }
-            }
-        }, 1000);
-
     }
 
 }

@@ -80,7 +80,7 @@ public class AddActivity extends AppCompatActivity {
                                 link.getText().toString(), linkName.getText().toString(),
                                 Liked.getRating(), Recogn.getRating(), Your.getRating(), img);
 
-                        Intent intent = new Intent(AddActivity.this, MainActivity.class);
+                        Intent intent = new Intent(AddActivity.this, LoadingActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }else{
